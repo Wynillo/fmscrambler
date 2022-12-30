@@ -68,37 +68,44 @@ namespace FMLib.Randomizer
                     }
                 }
             }
+
             _fs.Dispose();
             _fs.Close();
 
             var output_dir = Static.IsoPath.Substring(0, Static.IsoPath.LastIndexOf('\\'));
 
             if (Static.UsedIso)
+            {
                 File.Copy(Static.IsoPath, $"{output_dir}\\{Static.RandomizerFileName}.bin");
+
+            }
             else
+            {
                 File.Move(Static.IsoPath, $"{output_dir}\\{Static.RandomizerFileName}.bin");
+            }
 
             Static.IsoPath = $"{output_dir}\\{Static.RandomizerFileName}.bin";
-            string[] cueTemplate = {$"FILE \"{Static.RandomizerFileName}.bin\" BINARY", "  TRACK 01 MODE2/2352", "    INDEX 01 00:00:00" };
-            
-            
+            string[] cueTemplate = { $"FILE \"{Static.RandomizerFileName}.bin\" BINARY", "  TRACK 01 MODE2/2352", "    INDEX 01 00:00:00" };
             File.WriteAllLines($"{output_dir}\\{Static.RandomizerFileName}.cue", cueTemplate);
+
             return 1;
         }
 
         private void ListDirectories(ref FileStream fs, IEnumerable<GameFile> iso)
         {
-            List<GameFile> fileList = new List<GameFile>();
+            var fileList = new List<GameFile>();
 
             foreach (GameFile file in iso)
             {
-                using (MemoryStream ms = new MemoryStream(fs.ExtractPiece(0, 2048, file.Offset)))
+                using (var ms = new MemoryStream(fs.ExtractPiece(0, 2048, file.Offset)))
                 {
                     ms.Position = 120L;
+
                     for (int j = ms.ReadByte(); j > 0; j = ms.ReadByte())
                     {
-                        GameFile tmpFile = new GameFile();
+                        var tmpFile = new GameFile();
                         byte[] arr = ms.ExtractPiece(0, j - 1);
+
                         tmpFile.Offset = arr.ExtractInt32(1) * 2352;
                         tmpFile.Size = arr.ExtractInt32(9);
                         tmpFile.IsDirectory = arr[24] == 2;
@@ -131,9 +138,11 @@ namespace FMLib.Randomizer
         private static string GetName(ref byte[] data, int size)
         {
             string text = string.Empty;
+
             for (int i = 0; i < size; i++)
             {
                 char c = Convert.ToChar(data[32 + i]);
+
                 if (c == ';')
                 {
                     break;
@@ -141,6 +150,7 @@ namespace FMLib.Randomizer
 
                 text += c.ToString();
             }
+
             return text;
         }
     }

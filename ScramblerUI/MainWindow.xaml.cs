@@ -65,7 +65,7 @@ namespace FMScrambler
 
         private void SyncScramble()
         {
-            int cardCount = Static.GlitchFusions ? 1400 : 722;
+            int cardCount = Static.GlitchFusions ? 1400 : Static.MaxCards;
             Static.SetCardCount(cardCount);
 
             DataScrambler fileHandler = new DataScrambler(int.Parse(txt_seed.Text));
@@ -74,7 +74,8 @@ namespace FMScrambler
                 {
                     fileHandler.PerformScrambling((int) txt_minAtk.Value, (int) txt_maxAtk.Value,
                         (int) txt_minDef.Value, (int) txt_maxDef.Value, (int) txt_minCost.Value,
-                        (int) txt_maxCost.Value, (int) txt_minDropRate.Value, (int) txt_maxDropRate.Value);
+                        (int) txt_maxCost.Value, (int) txt_minDropRate.Value, (int) txt_maxDropRate.Value,
+                        (int) txt_dropCount.Value, (ushort) txt_starChipsDuel.Value);
                 });
 
             MessageBox.Show("Done scrambling, you may proceed with patching your game ISO now." + (Static.Spoiler ? " Spoiler files were generated as well" : ""),
@@ -98,6 +99,11 @@ namespace FMScrambler
 
         private void btn_patchiso_Click(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrEmpty(Static.RandomizerFileName))
+            {
+                LabelUpdateSeed();
+            }
+
             if (!Static.UsedIso)
             {
                 MessageBox.Show("Did you make a backup copy of your Image file before patching? If not, do so before pressing OK.", "Backup Info",
@@ -172,6 +178,9 @@ namespace FMScrambler
                     case "txt_maxDef":
                         _prevSeedText = txt_maxDef.Value.ToString();
                         break;
+                    case "txt_dropCount":
+                        _prevSeedText = txt_dropCount.Value.ToString();
+                        break;
                 }
 
                 _isPasteEvent = true;
@@ -199,6 +208,9 @@ namespace FMScrambler
                     case "txt_maxDef":
                         _prevSeedText = txt_maxDef.Value.ToString();
                         break;
+                    case "txt_dropCount":
+                        _prevSeedText = txt_dropCount.Value.ToString();
+                        break;
                 }
 
                 _isPasteEvent = false;
@@ -221,6 +233,9 @@ namespace FMScrambler
                         break;
                     case "txt_maxDef":
                         txt_maxDef.Value = Int32.Parse($"1{txt_maxDef.Value.ToString().Substring(1)}"); ;
+                        break;
+                    case "txt_dropCount":
+                        txt_dropCount.Value = Int32.Parse($"1{txt_dropCount.Value.ToString().Substring(1)}"); ;
                         break;
                 }
             }

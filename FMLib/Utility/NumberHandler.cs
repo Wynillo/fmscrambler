@@ -17,10 +17,12 @@ namespace FMLib.Utility
         /// <returns></returns>
         public static byte[] TextToArray(this string s, Dictionary<char, byte> dic)
         {
-            List<byte> list = new List<byte>();
+            var list = new List<byte>();
+
             for (int i = 0; i < s.Length; i++)
             {
                 char c = s[i];
+
                 if (dic.ContainsKey(c))
                 {
                     list.Add(dic[c]);
@@ -30,7 +32,9 @@ namespace FMLib.Utility
                     list.Add(254);
                 }
             }
+
             list.Add(255);
+
             return list.ToArray();
         }
 
@@ -62,6 +66,7 @@ namespace FMLib.Utility
 
             byte[] buffer = new byte[length];
             ms.Read(buffer, offset, length);
+
             return buffer;
         }
 
@@ -82,6 +87,7 @@ namespace FMLib.Utility
 
             byte[] buffer = new byte[length];
             ms.Read(buffer, 0, length);
+
             return buffer;
         }
 
@@ -96,6 +102,7 @@ namespace FMLib.Utility
         {
             int offset1 = offset > -1 ? offset : 0;
             int count = length > -1 ? length : data.Length;
+
             using (FileStream fileStream = File.Create(path))
             {
                 fileStream.Write(data, offset1, count);
@@ -110,6 +117,7 @@ namespace FMLib.Utility
         public static byte[] Int32ToByteArray(this int value)
         {
             byte[] numArray = new byte[4];
+
             for (int index = 0; index < 4; ++index)
             {
                 numArray[index] = (byte)(value >> index * 8 & byte.MaxValue);
@@ -149,11 +157,13 @@ namespace FMLib.Utility
             var bytes_amt = str.Length / 2;
             var byte_arr = new byte[bytes_amt];
             var byte_ind = 0;
-            for(var i = 0; i < str.Length; i += 2)
+
+            for (var i = 0; i < str.Length; i += 2)
             {
                 byte.TryParse(str.Substring(i, 2), System.Globalization.NumberStyles.AllowHexSpecifier, null, out byte res);
                 byte_arr[byte_ind++] = res;
             }
+
             return byte_arr;
         }
 
@@ -165,6 +175,7 @@ namespace FMLib.Utility
         public static byte[] Int16ToByteArray(this short value)
         {
             byte[] numArray = new byte[2];
+
             for (int index = 0; index < 2; ++index)
             {
                 numArray[index] = (byte)(value >> index * 8 & byte.MaxValue);
@@ -202,13 +213,17 @@ namespace FMLib.Utility
         /// <returns></returns>
         public static int ReadInt32(this MemoryStream ms, bool changePos = false, int newPos = 0)
         {
-            if (changePos) ms.Position = newPos;
+            if (changePos)
+            {
+                ms.Position = newPos;
+            }
 
             byte[] bytes = new byte[4];
             bytes[3] = (byte)ms.ReadByte();
             bytes[2] = (byte)ms.ReadByte();
             bytes[1] = (byte)ms.ReadByte();
             bytes[0] = (byte)ms.ReadByte();
+
             return bytes.ExtractInt32();
         }
 
@@ -244,7 +259,8 @@ namespace FMLib.Utility
                     text = text + "[" + b.ToString("X2") + "]";
                 }
             }
+
             return text;
-        }       
+        }
     }
 }

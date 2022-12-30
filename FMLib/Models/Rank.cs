@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FMLib.Utility;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,15 +33,15 @@ namespace FMLib.Models
         /// <summary>
         /// 
         /// </summary>
-        public int[] SaPow { get; set; } = new int[722];
+        public int[] SaPow { get; set; } = new int[Static.MaxCards];
         /// <summary>
         /// 
         /// </summary>
-        public int[] SaTec { get; set; } = new int[722];
+        public int[] SaTec { get; set; } = new int[Static.MaxCards];
         /// <summary>
         /// 
         /// </summary>
-        public int[] BcdPow { get; set; } = new int[722];
+        public int[] BcdPow { get; set; } = new int[Static.MaxCards];
 
         /// <summary>
         /// 

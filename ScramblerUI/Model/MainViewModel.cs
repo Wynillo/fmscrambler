@@ -11,9 +11,8 @@ namespace FMScrambler.Model
         private string _labelPath = "Nothing selected.";
         private string _textboxSeed;
         private bool _checkboxRandomAttributes;
-        private bool _checkboxRandomTypes;
+        private bool _checkboxRandomMonstersTypes;
         private bool _checkboxRandomGuardianStars;
-        private bool _checkboxGlitchGuardianStars;
         private bool _checkboxRandomCardDrops;
         private bool _checkboxRandomDecks;
         private bool _checkboxAttackDefenseRandomizing;
@@ -21,6 +20,10 @@ namespace FMScrambler.Model
         private bool _checkboxRandomEquips;
         private bool _checkboxRandomFusions;
         private bool _checkboxRandomStarchips;
+        private bool _checkboxRandomNames;
+        private bool _checkboxRandomDescriptions;
+        private bool _checkboxRandomStarterDecks;
+        private bool _checkboxRandomCardImages;
         private int _textboxMinAttack = 1000;
         private int _textboxMaxAttack = 3000;
         private int _textboxMinDefense = 1000;
@@ -29,6 +32,8 @@ namespace FMScrambler.Model
         private int _textboxMaxCost = 999999;
         private int _textboxMinDropRate = 1;
         private int _textboxMaxDropRate = 1;
+        private int _textboxDropCount = 1;
+        private ushort _textboxStarChipsDuel = 5;
         private bool _checkboxIsoSeed = true;
         private bool _checkboxIsoDate;
         private bool _checkboxIsoOptions;
@@ -67,14 +72,14 @@ namespace FMScrambler.Model
             }
         }
 
-        public bool CheckboxRandomTypes
+        public bool CheckboxRandomMonstersTypes
         {
-            get => _checkboxRandomTypes;
+            get => _checkboxRandomMonstersTypes;
             set
             {
-                _checkboxRandomTypes = value;
-                Static.RandomTypes = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("CheckboxRandomTypes"));
+                _checkboxRandomMonstersTypes = value;
+                Static.RandomMonstersTypes = value;
+                PropertyChanged(this, new PropertyChangedEventArgs("CheckboxRandomMonstersTypes"));
                 onIsoCheckbox();
             }
         }
@@ -87,18 +92,6 @@ namespace FMScrambler.Model
                 _checkboxRandomGuardianStars = value;
                 Static.RandomGuardianStars = value;
                 PropertyChanged(this, new PropertyChangedEventArgs("CheckboxRandomGuardianStars"));
-                onIsoCheckbox();
-            }
-        }
-
-        public bool CheckboxGlitchGuardianStars
-        {
-            get => _checkboxGlitchGuardianStars;
-            set
-            {
-                _checkboxGlitchGuardianStars = value;
-                Static.GlitchGuardianStars = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("CheckboxGlitchGuardianStars"));
                 onIsoCheckbox();
             }
         }
@@ -171,6 +164,54 @@ namespace FMScrambler.Model
                 _checkboxRandomFusions = value;
                 Static.RandomFusions = value;
                 PropertyChanged(this, new PropertyChangedEventArgs("CheckboxRandomFusions"));
+                onIsoCheckbox();
+            }
+        }
+
+        public bool CheckboxRandomNames
+        {
+            get => _checkboxRandomNames;
+            set
+            {
+                _checkboxRandomNames = value;
+                Static.RandomNames = value;
+                PropertyChanged(this, new PropertyChangedEventArgs("CheckboxRandomNames"));
+                onIsoCheckbox();
+            }
+        }
+
+        public bool CheckboxRandomCardImages
+        {
+            get => _checkboxRandomCardImages;
+            set
+            {
+                _checkboxRandomCardImages = value;
+                Static.RandomCardImages = value;
+                PropertyChanged(this, new PropertyChangedEventArgs("CheckboxRandomCardImages"));
+                onIsoCheckbox();
+            }
+        }
+
+        public bool CheckboxRandomDescriptions
+        {
+            get => _checkboxRandomDescriptions;
+            set
+            {
+                _checkboxRandomDescriptions = value;
+                Static.RandomDescriptions = value;
+                PropertyChanged(this, new PropertyChangedEventArgs("CheckboxRandomDescriptions"));
+                onIsoCheckbox();
+            }
+        }
+
+        public bool CheckboxRandomStarterDecks
+        {
+            get => _checkboxRandomStarterDecks;
+            set
+            {
+                _checkboxRandomStarterDecks = value;
+                Static.RandomStarterDecks = value;
+                PropertyChanged(this, new PropertyChangedEventArgs("CheckboxRandomStarterDecks"));
                 onIsoCheckbox();
             }
         }
@@ -257,6 +298,28 @@ namespace FMScrambler.Model
             }
         }
 
+        public int TextboxDropCount
+        {
+            get => _textboxDropCount;
+            set
+            {
+                _textboxDropCount = value;
+                PropertyChanged(this, new PropertyChangedEventArgs("TextboxDropCount"));
+                onIsoCheckbox();
+            }
+        }
+
+        public ushort TextboxStarChipsDuel
+        {
+            get => _textboxStarChipsDuel;
+            set
+            {
+                _textboxStarChipsDuel = value;
+                PropertyChanged(this, new PropertyChangedEventArgs("TextboxStarChipsDuel"));
+                onIsoCheckbox();
+            }
+        }
+
         public int TextboxMaxDropRate
         {
             get => _textboxMaxDropRate;
@@ -336,12 +399,18 @@ namespace FMScrambler.Model
                 if (Static.RandomAtkdef) options_str += "[ATKDEF]";
                 if (Static.RandomAttributes) options_str += "[Attributes]";
                 if (Static.RandomCardDrops) options_str += "[Drops]";
-                if (Static.RandomDecks) options_str += "[Decks]";
+                if (Static.RandomDecks) options_str += "[Duelist_Decks]";
                 if (Static.RandomEquips) options_str += "[Equips]";
                 if (Static.RandomFusions) options_str += "[Fusions]";
                 if (Static.RandomGuardianStars) options_str += "[Guardian_Stars]";
-                if (Static.RandomTypes) options_str += "[Types]";
-                if (Static.RandomStarchips) options_str += "[Starchips]";
+                if (Static.RandomMonstersTypes) options_str += "[Types]";
+                if (Static.RandomStarchips) options_str += "[Starchips_Cost]";
+                if (Static.RandomNames) options_str += "[Names]";
+                if (Static.RandomDescriptions) options_str += "[Descriptions]";
+                if (Static.RandomCardImages) options_str += "[Images]";
+                if (TextboxDropCount != 1) options_str += $"[Drop_Count_{TextboxDropCount}]";
+                if (TextboxStarChipsDuel != Static.MinStarChipsDuel) options_str += $"[Starchips_Duel_{TextboxStarChipsDuel}]";
+                if (Static.RandomStarterDecks) options_str += "[Starter_Decks]";
                 LabelIsoExample += options_str;
             }
             if (CheckboxIsoDate) LabelIsoExample += $"[{DateTime.Now.Year}-{DateTime.Now.Month}-{DateTime.Now.Day}]";

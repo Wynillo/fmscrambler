@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FMLib.Utility;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,7 +28,7 @@ namespace FMLib.Models
         /// <summary>
         /// 
         /// </summary>
-        public int[] Deck { get; set; } = new int[722];
+        public int[] Deck { get; set; } = new int[Static.MaxCards];
         /// <summary>
         /// 
         /// </summary>

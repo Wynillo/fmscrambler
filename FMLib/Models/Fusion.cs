@@ -32,6 +32,5 @@
         /// Resulting Fusion ID as Integer
         /// </summary>
         public int Result { set; get; }
-
     }
 }
