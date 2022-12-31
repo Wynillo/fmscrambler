@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Drawing2D;
+using System.Drawing;
 using System.IO;
 
 namespace FMLib.Utility
@@ -261,6 +263,42 @@ namespace FMLib.Utility
             }
 
             return text;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sourceBitmap"></param>
+        /// <param name="maxWidth"></param>
+        /// <param name="maxHeight"></param>
+        /// <returns></returns>
+        public static Bitmap ProportionallyResizeBitmap(this Bitmap sourceBitmap, int maxWidth, int maxHeight)
+        {
+            Size size = sourceBitmap.Size;
+            int height = (int)(((double)maxWidth) / (((double)sourceBitmap.Width) / ((double)sourceBitmap.Height)));
+            size = new Size(maxWidth, height);
+            
+            if (size.Width > maxWidth)
+            {
+                height = (int)(((double)maxWidth) / (((double)sourceBitmap.Width) / ((double)sourceBitmap.Height)));
+                size = new Size(maxWidth, height);
+            }
+            
+            if (size.Height > maxHeight)
+            {
+                int width = (int)(maxHeight * (((double)sourceBitmap.Width) / ((double)sourceBitmap.Height)));
+                size = new Size(width, maxHeight);
+            }
+
+            Bitmap image = new Bitmap(size.Width + 1, size.Height + 1);
+            
+            using (Graphics graphics = Graphics.FromImage(image))
+            {
+                graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+                graphics.DrawImage(sourceBitmap, 0, 0, (int)(size.Width + 1), (int)(size.Height + 1));
+            }
+
+            return image;
         }
     }
 }

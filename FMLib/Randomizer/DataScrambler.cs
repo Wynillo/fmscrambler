@@ -1680,8 +1680,6 @@ namespace FMLib.Randomizer
         /// <returns></returns>
         public bool PerformScrambling(int minAtk = 0, int maxAtk = 0, int minDef = 0, int maxDef = 0, int minCost = 0, int maxCost = 999999, int minDropRate = 1, int maxDropRate = 1, int dropCount = 1, ushort starChipsDuel = 5)
         {
-            LoadDataFromSlus();
-            LoadDataFromWaMrg();
             RandomizeFusions();
             RandomizeCardInfo(minAtk, maxAtk, minDef, maxDef, minCost, maxCost);
             RandomizeCardDrops(minDropRate, maxDropRate);

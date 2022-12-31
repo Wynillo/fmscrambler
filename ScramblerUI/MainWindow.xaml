@@ -16,7 +16,7 @@
         <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.HotTrackColorKey}}"/>
     </Controls:MetroWindow.BorderBrush>
     <Grid UseLayoutRounding="False" Height="381" VerticalAlignment="Top">
-        <TabControl x:Name="tabControl" HorizontalAlignment="Left" Height="330" Margin="10,10,0,0" VerticalAlignment="Top" Width="764" Background="#FF3CACDC" BorderBrush="#FF3CACDC" Foreground="{x:Null}">
+        <TabControl x:Name="tabControl" HorizontalAlignment="Left" Height="330" Margin="10,10,0,0" VerticalAlignment="Top" Width="764" Background="#FF3CACDC" BorderBrush="#FF3CACDC" Foreground="{x:Null}" SelectionChanged="tabControl_SelectionChanged">
             <TabItem Header="Action" BorderBrush="Black" Margin="3,-4,-32,4" Foreground="Black">
                 <TabItem.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -81,7 +81,7 @@
                             </GroupBox>
                         </Grid>
                     </GroupBox>
-                    <GroupBox x:Name="grp_atkdef" Header="ATK/DEF Options" HorizontalAlignment="Left" Height="161" Margin="424,10,0,0" VerticalAlignment="Top" Width="324" Controls:HeaderedControlHelper.HeaderFontSize="13" Controls:HeaderedControlHelper.HeaderFontWeight="Medium" IsEnabled="{Binding CheckboxAttackDefenseRandomizing, Mode=OneWay}" MouseUp="grp_atkdef_MouseUp" FontWeight="Bold">
+                    <GroupBox x:Name="grp_atkdef" Header="ATK/DEF Options" HorizontalAlignment="Left" Height="161" Margin="424,10,0,0" VerticalAlignment="Top" Width="324" Controls:HeaderedControlHelper.HeaderFontSize="13" Controls:HeaderedControlHelper.HeaderFontWeight="Medium" IsEnabled="{Binding CheckboxAttackDefenseRandomizing, Mode=OneWay}" FontWeight="Bold">
                         <Grid x:Name="grid_grpatkdef" Height="141" Width="314" UseLayoutRounding="False" Margin="0" >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="187*"/>
@@ -155,6 +155,28 @@
                     <TextBlock x:Name="txtb_credits1" HorizontalAlignment="Left" Height="256" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="738" TextAlignment="Center" LineHeight="10" FontSize="11"><Run Text="This tool was created by "/><Run FontWeight="Bold" Text="duke1102 "/><Run Text="and updated by "/><Run FontWeight="Bold" Text="Cretino "/><Run Text="for the Playstation game &quot;Yu-Gi-Oh! Forbidden Memories&quot; (NTSC, USA version)."/><LineBreak/><Run Text="This software is licensed under an "/><Run FontWeight="Bold" Text="MIT license"/><Run Text=", you can find a copy in the folder of the tool under "/><Run FontWeight="Bold" Text="&quot;LICENSE&quot;"/><Run Text="."/><LineBreak/><Run/><LineBreak/><Run FontSize="10" Text="Credits to "/><Run FontWeight="Bold" FontSize="10" Text="Neto Rpg "/><Run FontSize="10" Text="and "/><Run FontWeight="Bold" FontSize="10" Text="RyuuzakiL5"/><Run FontSize="10" Text=" for their "/><Run FontWeight="Bold" FontSize="10" Text="FM Tool ALPHA"/><Run FontSize="10" Text=", "/><LineBreak/><Run FontSize="10" Text="which helped me out a whole lot with reading/manipulating the game files."/><LineBreak/><Run FontSize="10" Text="Show them some love!"/><LineBreak/><Run FontSize="10"/><LineBreak/><Run FontSize="10" Text="You can find precompiled binaries and the source code of this tool at Github."/><LineBreak/><Run FontWeight="Bold" FontStyle="Italic" FontSize="10" Text="http://github.com/duke1102/fmscrambler"/><LineBreak/><Run FontSize="10"/><LineBreak/><Run FontSize="10" Text="Feel free to comment, leave feedback, bug reports, fork or contribute!"/><LineBreak/><Run FontSize="10"/><LineBreak/><Run FontSize="10"/><LineBreak/><Run FontSize="10" Text="Special thanks to the Yu-Gi-Oh! Forbidden Memories Speedrun Community, especially the Discord Server. "/><Run FontWeight="Bold" FontSize="10" Text="You guys are awesome!"/><LineBreak/><Run FontWeight="Bold" FontSize="10"/><LineBreak/><Run FontWeight="Bold" FontSize="10" Text="Thanks for feedback/playtesting goes to Totozigemm, GenericMadScientist, Xer_91 and gfc_marcus."/></TextBlock>
                 </Grid>
             </TabItem>
+            <TabItem x:Name="tab_cardsFilters" Header="Card Filter" Height="39" VerticalAlignment="Top" Margin="50,-4,-50,0" IsEnabled="False">
+                <TabItem.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="White" Offset="0"/>
+                        <GradientStop Color="#FFE5E5E5" Offset="1"/>
+                    </LinearGradientBrush>
+                </TabItem.Background>
+                <Grid Background="#FFE5E5E5">
+                    <GroupBox Header="Banned Cards" Height="160" Width="320" Margin="10,10,428,115">
+                        <ListBox x:Name="listb_cardsFilters" IsEnabled="False" SelectionMode="Multiple">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel MouseEnter="stackp_cardsFiltersImage_MouseEnter">
+                                        <CheckBox Content="{Binding Name}" ToolTip="{Binding Description}" IsChecked="{Binding IsSelected, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </GroupBox>
+                    <Image x:Name="img_bannedCardId" Width="102" Height="96" Margin="343,13,313,176" Visibility="Hidden"/>
+                </Grid>
+            </TabItem>
         </TabControl>
         <Label x:Name="lbl_copyleft_Copy" Content="http://github.com/duke1102/fmscrambler" FontSize="11" HorizontalContentAlignment="Center" Margin="13,351,545,15" VerticalContentAlignment="Center" Height="17" Padding="0" Width="232"/>
         <Canvas x:Name="pgr_back" Background="#C1000000" Visibility="Hidden">
@@ -165,6 +187,5 @@
             </Controls:ProgressRing>
         </Canvas>
         <Label x:Name="lbl_version" Content="{Binding VersionMeta, Mode=OneTime}" FontSize="11" HorizontalContentAlignment="Center" Margin="662,351,0,0" VerticalContentAlignment="Center" Height="17" Padding="0" Width="118" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-
     </Grid>
 </Controls:MetroWindow>

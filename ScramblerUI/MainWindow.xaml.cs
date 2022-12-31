@@ -9,10 +9,15 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
+using System.Collections.Generic;
 using FMLib.Disc;
 using FMLib.Randomizer;
 using FMLib.Utility;
 using Microsoft.Win32;
+using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Interop;
+using System.Windows.Media.Imaging;
 
 namespace FMScrambler
 {
@@ -24,19 +29,18 @@ namespace FMScrambler
         private bool _isPasteEvent = false;
         private string _prevSeedText;
         private readonly Random _rnd = new Random();
- 
+        private List<dynamic> _cardBanList = new List<dynamic>();
 
         public MainWindow()
         {
             InitializeComponent();
         }
 
-
         // Randomizing via Game Image
         private async void btn_loadiso_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog dlg = new OpenFileDialog {Title = "Location of Yu-Gi-Oh! Forbidden Memories NTSC CUE File", Filter = "*.cue | *.cue" };
-     
+            OpenFileDialog dlg = new OpenFileDialog { Title = "Location of Yu-Gi-Oh! Forbidden Memories NTSC CUE File", Filter = "*.cue | *.cue" };
+
             if (dlg.ShowDialog() == true)
             {
                 lbl_path.Content = Path.GetDirectoryName(dlg.FileName);
@@ -55,7 +59,27 @@ namespace FMScrambler
 
                 btn_patchiso.IsEnabled = false;
                 btn_perform.IsEnabled = true;
-            }      
+
+                LoadCardsFilters();
+            }
+        }
+
+        private void LoadCardsFilters()
+        {
+            var fileHandler = new DataScrambler(int.Parse(txt_seed.Text));
+            var cardBanList = new List<dynamic>();
+
+            fileHandler.LoadDataFromSlus();
+            fileHandler.LoadDataFromWaMrg();
+
+            foreach (var card in Static.Cards)
+            {
+                cardBanList.Add(new { card.Name, card.Description, Image = card.BigImage.CreateUnsafeBitmap() });
+            }
+
+            listb_cardsFilters.ItemsSource = cardBanList;
+            listb_cardsFilters.IsEnabled = true;
+            tab_cardsFilters.IsEnabled = true;
         }
 
         private void btn_perform_Click(object sender, RoutedEventArgs e)
@@ -72,10 +96,10 @@ namespace FMScrambler
 
             Dispatcher.CurrentDispatcher.Invoke(() =>
                 {
-                    fileHandler.PerformScrambling((int) txt_minAtk.Value, (int) txt_maxAtk.Value,
-                        (int) txt_minDef.Value, (int) txt_maxDef.Value, (int) txt_minCost.Value,
-                        (int) txt_maxCost.Value, (int) txt_minDropRate.Value, (int) txt_maxDropRate.Value,
-                        (int) txt_dropCount.Value, (ushort) txt_starChipsDuel.Value);
+                    fileHandler.PerformScrambling((int)txt_minAtk.Value, (int)txt_maxAtk.Value,
+                        (int)txt_minDef.Value, (int)txt_maxDef.Value, (int)txt_minCost.Value,
+                        (int)txt_maxCost.Value, (int)txt_minDropRate.Value, (int)txt_maxDropRate.Value,
+                        (int)txt_dropCount.Value, (ushort)txt_starChipsDuel.Value);
                 });
 
             MessageBox.Show("Done scrambling, you may proceed with patching your game ISO now." + (Static.Spoiler ? " Spoiler files were generated as well" : ""),
@@ -120,14 +144,12 @@ namespace FMScrambler
             {
                 DoPatch(Static.IsoPath);
             }
+
             pgr_back.Visibility = Visibility.Hidden;
         }
 
         private async void DoPatch(string path)
         {
-#if DEBUG
-            Console.WriteLine(path);
-#endif
             pgr_back.Visibility = Visibility.Visible;
             ImagePatcher patcher = new ImagePatcher(path);
             Static.IsoPath = path;
@@ -161,7 +183,7 @@ namespace FMScrambler
         {
             if (Key.V == e.Key && Keyboard.Modifiers == ModifierKeys.Control)
             {
-                switch (((TextBox) sender).Name)
+                switch (((TextBox)sender).Name)
                 {
                     case "txt_seed":
                         _prevSeedText = txt_seed.Text;
@@ -215,6 +237,7 @@ namespace FMScrambler
 
                 _isPasteEvent = false;
             }
+
             if (txt_seed.Text.StartsWith("0"))
             {
                 switch (((TextBox)sender).Name)
@@ -239,6 +262,7 @@ namespace FMScrambler
                         break;
                 }
             }
+
             LabelUpdateSeed();
         }
 
@@ -254,7 +278,7 @@ namespace FMScrambler
                 Static.RandomizerFileName = content.Substring(0, content.LastIndexOf('.'));
             }
         }
-    
+
         private void MetroWindow_Initialized(object sender, EventArgs e)
         {
             Title = $"YGO! FM Fusion Scrambler Tool - {Meta.MajorVersion}.{Meta.MinorVersion}.{Meta.PatchVersion} {Meta.VersionInfo}";
@@ -271,6 +295,7 @@ namespace FMScrambler
             {
                 MessageBox.Show("CharacterTable.txt not found! Provide a path for it!", "Unable to find CharacterTable.txt", MessageBoxButton.OK, MessageBoxImage.Error);
                 OpenFileDialog ofd = new OpenFileDialog { Title = "CharacterTable file", Filter = "CharacterTable.txt|CharacterTable.txt" };
+
                 if (ofd.ShowDialog() == true)
                 {
                     table_path = ofd.FileName;
@@ -305,6 +330,7 @@ namespace FMScrambler
                     Static.RDict.Add(k1, k2);
                 }
             }
+
             //There should be 85 entries otherwise file got corrupted, misread or user manually provided a bad file
             if (Static.Dict.Values.Count != 85)
             {
@@ -316,11 +342,14 @@ namespace FMScrambler
         private void btn_loadiso1_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dlg = new OpenFileDialog { Title = "Location of SLUS_014.11", Filter = "SLUS_014.11|SLUS_014.11" };
+            var findSlus = false;
+            var findWa = false;
 
             if (dlg.ShowDialog() == true)
             {
                 Static.SlusPath = dlg.FileName;
                 lbl_path.Content = Path.GetDirectoryName(dlg.FileName);
+                findSlus = true;
 
                 if (!File.Exists(Path.GetDirectoryName(dlg.FileName) + "\\DATA\\WA_MRG.MRG"))
                 {
@@ -333,6 +362,7 @@ namespace FMScrambler
                         btn_patchiso.IsEnabled = false;
                         btn_perform.IsEnabled = true;
                         Static.UsedIso = false;
+                        findWa = true;
                     }
                 }
                 else
@@ -341,15 +371,86 @@ namespace FMScrambler
                     btn_patchiso.IsEnabled = false;
                     btn_perform.IsEnabled = true;
                     Static.UsedIso = false;
+                    findWa = true;
+                }
+            }
+
+            if (findSlus == true
+                && findWa == true)
+            {
+                LoadCardsFilters();
+            }
+        }
+
+        private void stackp_cardsFiltersImage_MouseEnter(object sender, MouseEventArgs e)
+        {
+            var stackPanelObject = e.Source as StackPanel;
+
+            if (stackPanelObject != null
+                && stackPanelObject.DataContext != null)
+            {
+                var bigImage = TypeDescriptor.GetProperties(stackPanelObject.DataContext)["Image"].GetValue(stackPanelObject.DataContext) as Bitmap;
+
+                if (bigImage != null)
+                {
+                    try
+                    {
+                        var handleBigImage = bigImage.GetHbitmap();
+
+                        img_bannedCardId.Source = Imaging.CreateBitmapSourceFromHBitmap(handleBigImage, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+                        img_bannedCardId.ToolTip = TypeDescriptor.GetProperties(stackPanelObject.DataContext)["Description"].GetValue(stackPanelObject.DataContext);
+                        img_bannedCardId.Visibility = Visibility.Visible;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message + "\r\n" + ex.InnerException?.Message, "Card Image Loader",
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
             }
         }
 
-        private void grp_atkdef_MouseUp(object sender, MouseButtonEventArgs e)
+        private void tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-#if DEBUG
-            Console.WriteLine($"{txt_minAtk.Value} - {txt_maxAtk.Value} || {txt_minDef.Value} - {txt_maxDef.Value}");
-#endif
+            var tabControlObject = e.Source as TabControl;
+
+            if (tabControlObject != null)
+            {
+                var tabItemObject = tabControlObject.SelectedValue as TabItem;
+
+                if (tabItemObject != null)
+                {
+                    if (tabItemObject.Header.Equals("Card Filter") == true)
+                    {
+                        if (_cardBanList.Count > 0)
+                        {
+                            for (int i = 0; i < _cardBanList.Count; i++)
+                            {
+                                listb_cardsFilters.SelectedItems.Add(_cardBanList[i]);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Card filter image clear
+                        img_bannedCardId.ToolTip = string.Empty;
+                        img_bannedCardId.Source = null;
+                        img_bannedCardId.Visibility = Visibility.Hidden;
+
+                        if (listb_cardsFilters.SelectedItems.Count > 0)
+                        {
+                            _cardBanList.Clear();
+
+                            for (int i = 0; i < listb_cardsFilters.SelectedItems.Count; i++)
+                            {
+                                _cardBanList.Add(listb_cardsFilters.SelectedItems[i]);
+                            }
+
+                            listb_cardsFilters.SelectedItems.Clear();
+                        }
+                    }
+                }
+            }
         }
     }
 }
