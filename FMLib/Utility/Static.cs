@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using FMLib.Models;
 
 namespace FMLib.Utility
@@ -139,6 +138,16 @@ namespace FMLib.Utility
         /// </summary>
         public static StarterDeck[] StarterDeck = new StarterDeck[MaxStarterDeck];
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public static FilterCards FilterStarterDeckCards = new FilterCards();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static FilterCards FilterDuelistDeckCards = new FilterCards();
+        
         /// <summary>
         /// Method to set the Card Count
         /// </summary>

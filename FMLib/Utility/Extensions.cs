@@ -9,7 +9,7 @@ namespace FMLib.Utility
     /// <summary>
     /// Helper class for Number Operations
     /// </summary>
-    public static class NumberHandler
+    public static class Extensions
     {
         /// <summary>
         /// 

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FMLib.Models
+﻿namespace FMLib.Models
 {
     /// <summary>
     /// Table of Cost/Password pairs of all cards

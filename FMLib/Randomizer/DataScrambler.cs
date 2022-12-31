@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using FMLib.Models;
 using FMLib.Utility;
-using System.Runtime.InteropServices.ComTypes;
-using static FMLib.Models.Card;
-using System.IO.Pipes;
-using static FMLib.Utility.Static;
+using System.ComponentModel;
 
 namespace FMLib.Randomizer
 {
@@ -390,9 +385,9 @@ namespace FMLib.Randomizer
             {
                 memStream.Position = 0x3800 * i;
 
-                Static.Cards[i].BigImage = new TIM(memStream.ExtractPiece(0, 0x2840, -1), 0x66, 0x60, 8, true, false);
-                Static.Cards[i].NameImage = new TIM(memStream.ExtractPiece(0, 0x2A0, -1), 0x60, 14, 4, false, true);
-                Static.Cards[i].SmallImage = new TIM(memStream.ExtractPiece(0, 0x580, -1), 40, 0x20, 8, true, false);
+                Static.Cards[i].BigImage = new FMLib.Models.Card.TIM(memStream.ExtractPiece(0, 0x2840, -1), 0x66, 0x60, 8, true, false);
+                Static.Cards[i].NameImage = new FMLib.Models.Card.TIM(memStream.ExtractPiece(0, 0x2A0, -1), 0x60, 14, 4, false, true);
+                Static.Cards[i].SmallImage = new FMLib.Models.Card.TIM(memStream.ExtractPiece(0, 0x580, -1), 40, 0x20, 8, true, false);
             }
 
             memStream.Close();
@@ -845,6 +840,13 @@ namespace FMLib.Randomizer
                         .Where(x => IsMonsterCard(x.Type))
                         .Select(y => y.Id)
                         .OrderBy(z => _random.Next())
+                        .ToList();
+
+                    var allBannedCards = Static.FilterStarterDeckCards.BannedCards
+                        .Select(x => TypeDescriptor.GetProperties(x)["Id"].GetValue(x) as int?).ToList();
+
+                    allMonstersId = allMonstersId
+                        .Where(x => allBannedCards.Contains(x) == false)
                         .ToList();
 
                     foreach (var randomNumber in randomNumbersArray)

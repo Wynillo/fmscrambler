@@ -95,7 +95,7 @@
     <Compile Include="Randomizer\ImagePatcher.cs" />
     <Compile Include="Utility\MainView.cs" />
     <Compile Include="Utility\Meta.cs" />
-    <Compile Include="Utility\NumberHandler.cs" />
+    <Compile Include="Utility\Extensions.cs" />
     <Compile Include="Utility\Static.cs" />
     <Compile Include="Disc\Track.cs" />
   </ItemGroup>

@@ -3,21 +3,20 @@ using System.Globalization;
 using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using System.Collections.Generic;
-using FMLib.Disc;
-using FMLib.Randomizer;
-using FMLib.Utility;
-using Microsoft.Win32;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
+using FMLib.Disc;
+using FMLib.Randomizer;
+using FMLib.Utility;
+using Microsoft.Win32;
 
 namespace FMScrambler
 {
@@ -29,7 +28,6 @@ namespace FMScrambler
         private bool _isPasteEvent = false;
         private string _prevSeedText;
         private readonly Random _rnd = new Random();
-        private List<dynamic> _cardBanList = new List<dynamic>();
 
         public MainWindow()
         {
@@ -74,7 +72,7 @@ namespace FMScrambler
 
             foreach (var card in Static.Cards)
             {
-                cardBanList.Add(new { card.Name, card.Description, Image = card.BigImage.CreateUnsafeBitmap() });
+                cardBanList.Add(new { card.Id, card.Name, card.Description, Image = card.BigImage.CreateUnsafeBitmap() });
             }
 
             listb_cardsFilters.ItemsSource = cardBanList;
@@ -422,11 +420,11 @@ namespace FMScrambler
                 {
                     if (tabItemObject.Header.Equals("Card Filter") == true)
                     {
-                        if (_cardBanList.Count > 0)
+                        if (Static.FilterStarterDeckCards.BannedCards.Count > 0)
                         {
-                            for (int i = 0; i < _cardBanList.Count; i++)
+                            for (int i = 0; i < Static.FilterStarterDeckCards.BannedCards.Count; i++)
                             {
-                                listb_cardsFilters.SelectedItems.Add(_cardBanList[i]);
+                                listb_cardsFilters.SelectedItems.Add(Static.FilterStarterDeckCards.BannedCards[i]);
                             }
                         }
                     }
@@ -439,11 +437,11 @@ namespace FMScrambler
 
                         if (listb_cardsFilters.SelectedItems.Count > 0)
                         {
-                            _cardBanList.Clear();
+                            Static.FilterStarterDeckCards.BannedCards.Clear();
 
                             for (int i = 0; i < listb_cardsFilters.SelectedItems.Count; i++)
                             {
-                                _cardBanList.Add(listb_cardsFilters.SelectedItems[i]);
+                                Static.FilterStarterDeckCards.BannedCards.Add(listb_cardsFilters.SelectedItems[i]);
                             }
 
                             listb_cardsFilters.SelectedItems.Clear();

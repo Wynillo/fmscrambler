@@ -14,7 +14,7 @@ namespace FMLib.Models
         /// <summary>
         /// 
         /// </summary>
-        public List<int> BannedId { get; set; }
+        public List<dynamic> BannedCards { get; set; } = new List<dynamic>();
 
         /// <summary>
         /// 
