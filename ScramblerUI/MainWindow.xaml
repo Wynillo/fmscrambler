@@ -16,7 +16,7 @@
         <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.HotTrackColorKey}}"/>
     </Controls:MetroWindow.BorderBrush>
     <Grid UseLayoutRounding="False" Height="381" VerticalAlignment="Top">
-        <TabControl x:Name="tabControl" HorizontalAlignment="Left" Height="321" Margin="10,10,0,0" VerticalAlignment="Top" Width="764" Background="#FF3CACDC" BorderBrush="#FF3CACDC" Foreground="{x:Null}">
+        <TabControl x:Name="tabControl" HorizontalAlignment="Left" Height="330" Margin="10,10,0,0" VerticalAlignment="Top" Width="764" Background="#FF3CACDC" BorderBrush="#FF3CACDC" Foreground="{x:Null}">
             <TabItem Header="Action" BorderBrush="Black" Margin="3,-4,-32,4" Foreground="Black">
                 <TabItem.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -25,24 +25,24 @@
                     </LinearGradientBrush>
                 </TabItem.Background>
                 <Grid Background="#FFE5E5E5">
-                    <GroupBox x:Name="grp_file" Header="File Options" HorizontalAlignment="Left" Height="114" Margin="10,10,0,0" VerticalAlignment="Top" Width="738" Controls:ControlsHelper.HeaderFontSize="13" Controls:ControlsHelper.HeaderFontWeight="Medium">
+                    <GroupBox x:Name="grp_file" Header="File Options" HorizontalAlignment="Left" Height="114" Margin="10,10,0,0" VerticalAlignment="Top" Width="738" Controls:HeaderedControlHelper.HeaderFontSize="13" Controls:HeaderedControlHelper.HeaderFontWeight="Medium">
                         <Grid Height="79" VerticalAlignment="Top" UseLayoutRounding="False" >
-                            <Button x:Name="btn_loadiso" Content="Load SLUS/MRG" Margin="10,10,586,34" Controls:ControlsHelper.ContentCharacterCasing="Upper" Controls:ButtonHelper.CornerRadius="8" Padding="0" FontSize="11" Click="btn_loadiso1_Click" ToolTip="Load the SLUS_014.11 and WA_MRG.MRG. Will automatically try to load the WA_MRG.MRG if existing in the DATA folder."/>
+                            <Button x:Name="btn_loadiso" Content="Load SLUS/MRG" Margin="10,10,586,34" Controls:ControlsHelper.ContentCharacterCasing="Upper" Controls:ControlsHelper.CornerRadius="8" Padding="0" FontSize="11" Click="btn_loadiso1_Click" ToolTip="Load the SLUS_014.11 and WA_MRG.MRG. Will automatically try to load the WA_MRG.MRG if existing in the DATA folder."/>
                             <Label x:Name="lbl_pathdesc" Content="Path:" HorizontalAlignment="Left" Margin="9,50,0,0" VerticalAlignment="Top" Width="37"/>
                             <Label x:Name="lbl_path" Content="{Binding LabelPath, FallbackValue=Nothing, Mode=OneWay}" HorizontalAlignment="Left" Margin="51,50,0,0" VerticalAlignment="Top" Width="667"/>
-                            <Button x:Name="btn_patchiso" Margin="331,10,10,34" Controls:ControlsHelper.ContentCharacterCasing="Upper" Controls:ButtonHelper.CornerRadius="8" Padding="0" FontSize="11" ToolTip="Patch an image of the game with the scrambled fusions. (Can be iso, bin, img, etc.)" Click="btn_patchiso_Click" IsEnabled="False" Content="PATCH ISO"/>
-                            <Button x:Name="btn_loadiso1" Content="Load Game (.cue/.bin)" Margin="147,10,402,34" Controls:ControlsHelper.ContentCharacterCasing="Upper" Controls:ButtonHelper.CornerRadius="8" Padding="0" FontSize="11" ToolTip="Load the SLUS_014.11 and WA_MRG.MRG. Will automatically try to load the WA_MRG.MRG if existing in the DATA folder." Click="btn_loadiso_Click"/>
+                            <Button x:Name="btn_patchiso" Margin="331,10,10,34" Controls:ControlsHelper.ContentCharacterCasing="Upper" Controls:ControlsHelper.CornerRadius="8" Padding="0" FontSize="11" ToolTip="Patch an image of the game with the scrambled fusions. (Can be iso, bin, img, etc.)" Click="btn_patchiso_Click" IsEnabled="False" Content="PATCH ISO"/>
+                            <Button x:Name="btn_loadiso1" Content="Load Game (.cue/.bin)" Margin="147,10,402,34" Controls:ControlsHelper.ContentCharacterCasing="Upper" Controls:ControlsHelper.CornerRadius="8" Padding="0" FontSize="11" ToolTip="Load the SLUS_014.11 and WA_MRG.MRG. Will automatically try to load the WA_MRG.MRG if existing in the DATA folder." Click="btn_loadiso_Click"/>
                         </Grid>
                     </GroupBox>
-                    <GroupBox x:Name="grp_rando" Header="Seed Options" HorizontalAlignment="Left" Height="115" Margin="10,129,0,0" VerticalAlignment="Top" Width="343" Controls:ControlsHelper.HeaderFontWeight="Medium" Controls:ControlsHelper.HeaderMargin="0" Controls:ControlsHelper.HeaderFontSize="13">
+                    <GroupBox x:Name="grp_rando" Header="Seed Options" HorizontalAlignment="Left" Height="115" Margin="10,129,0,0" VerticalAlignment="Top" Width="343" Controls:HeaderedControlHelper.HeaderFontWeight="Medium" Controls:HeaderedControlHelper.HeaderMargin="0" Controls:HeaderedControlHelper.HeaderFontSize="13">
                         <Grid Margin="0,0,-2,3">
                             <TextBox x:Name="txt_seed" Text="{Binding TextboxSeed, Mode=TwoWay}" MaxLength="9" TextWrapping="Wrap" FontWeight="Bold" TextAlignment="Center" Margin="2,8,8,36" VerticalContentAlignment="Center" Controls:TextBoxHelper.WatermarkAlignment="Justify" PreviewTextInput="NumberValidationTextBox" ToolTip="Seed" Initialized="txt_seed_Initialized" PreviewKeyDown="txt_seed_PreviewKeyDown" TextChanged="txt_seed_TextChanged" />
-                            <Button x:Name="btn_genseed" Content="Generate Random" Height="26" VerticalAlignment="Top" Margin="2,46,8,0" Controls:ButtonHelper.CornerRadius="8" FontSize="11" FontWeight="Bold" Padding="0" Click="button_Click" ToolTip="Generate a random Seed."/>
+                            <Button x:Name="btn_genseed" Content="Generate Random" Height="26" VerticalAlignment="Top" Margin="2,46,8,0" Controls:ControlsHelper.CornerRadius="8" FontSize="11" FontWeight="Bold" Padding="0" Click="button_Click" ToolTip="Generate a random Seed."/>
                         </Grid>
                     </GroupBox>
-                    <GroupBox x:Name="grp_action" Header="Action" HorizontalAlignment="Left" Height="115" Margin="358,129,0,0" VerticalAlignment="Top" Width="390" Background="#CC119EDA" Controls:ControlsHelper.HeaderFontSize="13" Controls:ControlsHelper.HeaderFontWeight="Medium">
+                    <GroupBox x:Name="grp_action" Header="Action" HorizontalAlignment="Left" Height="115" Margin="358,129,0,0" VerticalAlignment="Top" Width="390" Controls:HeaderedControlHelper.HeaderFontSize="13" Controls:HeaderedControlHelper.HeaderFontWeight="Medium">
                         <Grid Margin="0,0,-2,-2">
-                            <Button x:Name="btn_perform" Content="Randomize!" HorizontalAlignment="Left" Margin="10,8,0,0" VerticalAlignment="Top" Width="362" Height="63" FontWeight="Bold" Controls:ButtonHelper.CornerRadius="8" Padding="0" FontSize="12" Click="btn_perform_Click" IsEnabled="False" ToolTip="Start the scrambling process."/>
+                            <Button x:Name="btn_perform" Content="Randomize!" HorizontalAlignment="Left" Margin="10,8,0,0" VerticalAlignment="Top" Width="362" Height="63" FontWeight="Bold" Controls:ControlsHelper.CornerRadius="8" Padding="0" FontSize="12" Click="btn_perform_Click" IsEnabled="False" ToolTip="Start the scrambling process."/>
                         </Grid>
                     </GroupBox>
                 </Grid>
@@ -55,7 +55,7 @@
                     </LinearGradientBrush>
                 </TabItem.Background>
                 <Grid Background="#FFE5E5E5">
-                    <GroupBox x:Name="grp_more1" Header="Options" HorizontalAlignment="Left" Height="256" Margin="10,10,0,0" VerticalAlignment="Top" Width="409" Background="#CC119EDA" Controls:ControlsHelper.HeaderFontSize="13" Controls:ControlsHelper.HeaderFontWeight="Medium" FontWeight="Bold">
+                    <GroupBox x:Name="grp_more1" Header="Options" HorizontalAlignment="Left" Height="266" Margin="10,10,0,0" VerticalAlignment="Top" Width="409" Controls:HeaderedControlHelper.HeaderFontSize="13" Controls:HeaderedControlHelper.HeaderFontWeight="Medium" FontWeight="Bold">
                         <Grid Margin="0,0,-2,5">
                             <CheckBox x:Name="chk_randomattributes" Content="Randomize Attributes" HorizontalAlignment="Left" VerticalAlignment="Top" IsChecked="{Binding CheckboxRandomAttributes, Mode=TwoWay}" />
                             <CheckBox x:Name="chk_randommonsterstypes" Content="Randomize Monsters Types" HorizontalAlignment="Left" Margin="210,0,0,0" VerticalAlignment="Top" IsChecked="{Binding CheckboxRandomMonstersTypes, Mode=TwoWay}" />
@@ -71,17 +71,17 @@
                             <CheckBox x:Name="chk_randomdescription" Content="Randomize Descriptions" Margin="0,138,31,0" VerticalAlignment="Top" HorizontalAlignment="Left" IsChecked="{Binding CheckboxRandomDescriptions, Mode=TwoWay}" ToolTip="Randomize Card Descriptions"/>
                             <CheckBox x:Name="chk_randomstarterdeck" Content="Randomize Starter Decks" Margin="0,138,26,0" VerticalAlignment="Top" HorizontalAlignment="Right" IsChecked="{Binding CheckboxRandomStarterDecks, Mode=TwoWay}" ToolTip="Randomize Starter Decks"/>
                             <CheckBox x:Name="chk_randomcardimages" Content="Randomize Card Images" HorizontalAlignment="Left" Margin="0,46,0,0" VerticalAlignment="Top" IsChecked="{Binding CheckboxRandomCardImages, Mode=TwoWay}"/>
-                            <GroupBox Header="Drop date" HorizontalAlignment="Left" Height="61" Margin="10,164,0,-10" VerticalAlignment="Top" Width="381" IsEnabled="{Binding CheckboxRandomCardDrops, Mode=OneWay}">
+                            <GroupBox Header="Drop rate" HorizontalAlignment="Left" Height="64" Margin="0,161,0,0" VerticalAlignment="Top" Width="400" IsEnabled="{Binding CheckboxRandomCardDrops, Mode=OneWay}">
                                 <Grid HorizontalAlignment="Left" Height="56" Margin="0,-27,0,-3" VerticalAlignment="Top" Width="381">
-                                    <Controls:NumericUpDown x:Name="txt_maxDropRate" HorizontalAlignment="Left" Margin="251,30,0,0" VerticalAlignment="Top" Width="120" HasDecimals="False" Maximum="2048" Minimum="1" NumericInputMode="Numbers" SnapToMultipleOfInterval="True" Value="{Binding TextboxMaxDropRate, Mode=TwoWay}"/>
-                                    <Controls:NumericUpDown x:Name="txt_minDropRate" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" HasDecimals="False" Maximum="2048" Minimum="1" NumericInputMode="Numbers" SnapToMultipleOfInterval="True" Value="{Binding TextboxMinDropRate, Mode=TwoWay}" Margin="53,30,0,0"/>
+                                    <Controls:NumericUpDown x:Name="txt_maxDropRate" HorizontalAlignment="Left" Margin="251,30,0,0" VerticalAlignment="Top" Width="120" Maximum="2048" Minimum="1" NumericInputMode="Numbers" SnapToMultipleOfInterval="True" Value="{Binding TextboxMaxDropRate, Mode=TwoWay}"/>
+                                    <Controls:NumericUpDown x:Name="txt_minDropRate" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Maximum="2048" Minimum="1" NumericInputMode="Numbers" SnapToMultipleOfInterval="True" Value="{Binding TextboxMinDropRate, Mode=TwoWay}" Margin="53,30,0,0"/>
                                     <Label Content="Max rate" HorizontalAlignment="Left" Margin="191,30,0,0" VerticalAlignment="Top"/>
                                     <Label Content="Min rate" HorizontalAlignment="Left" Margin="-5,30,0,0" VerticalAlignment="Top"/>
                                 </Grid>
                             </GroupBox>
                         </Grid>
                     </GroupBox>
-                    <GroupBox x:Name="grp_atkdef" Header="ATK/DEF Options" HorizontalAlignment="Left" Height="161" Margin="424,10,0,0" VerticalAlignment="Top" Width="324" Controls:ControlsHelper.HeaderFontSize="13" Controls:ControlsHelper.HeaderFontWeight="Medium" IsEnabled="{Binding CheckboxAttackDefenseRandomizing, Mode=OneWay}" MouseUp="grp_atkdef_MouseUp" FontWeight="Bold">
+                    <GroupBox x:Name="grp_atkdef" Header="ATK/DEF Options" HorizontalAlignment="Left" Height="161" Margin="424,10,0,0" VerticalAlignment="Top" Width="324" Controls:HeaderedControlHelper.HeaderFontSize="13" Controls:HeaderedControlHelper.HeaderFontWeight="Medium" IsEnabled="{Binding CheckboxAttackDefenseRandomizing, Mode=OneWay}" MouseUp="grp_atkdef_MouseUp" FontWeight="Bold">
                         <Grid x:Name="grid_grpatkdef" Height="141" Width="314" UseLayoutRounding="False" Margin="0" >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="187*"/>
@@ -94,20 +94,20 @@
                             <Label Content="Max. ATK" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="184,17,0,0" Width="120" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.ColumnSpan="3"/>
                             <Label Content="Min. DEF" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,81,0,0" Width="120" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                             <Label Content="Max. DEF" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="184,81,0,0" Width="120" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.ColumnSpan="3"/>
-                            <Controls:NumericUpDown x:Name="txt_minAtk" HorizontalAlignment="Left" Margin="10,35,0,0" VerticalAlignment="Top" Width="120" HasDecimals="False" Maximum="5500" Minimum="0" NumericInputMode="Numbers" SnapToMultipleOfInterval="True" Value="{Binding TextboxMinAttack, Mode=TwoWay}" />
-                            <Controls:NumericUpDown x:Name="txt_maxAtk" HorizontalAlignment="Left" Margin="184,35,0,0" VerticalAlignment="Top" Width="120" HasDecimals="False" Maximum="5500" Minimum="0" NumericInputMode="Numbers" SnapToMultipleOfInterval="True" Value="{Binding TextboxMaxAttack, Mode=TwoWay}" Grid.ColumnSpan="3"/>
-                            <Controls:NumericUpDown x:Name="txt_minDef" HorizontalAlignment="Left" Margin="10,99,0,0" VerticalAlignment="Top" Width="120" HasDecimals="False" Maximum="5500" Minimum="0" NumericInputMode="Numbers" SnapToMultipleOfInterval="True" Value="{Binding TextboxMinDefense, Mode=TwoWay}"/>
-                            <Controls:NumericUpDown x:Name="txt_maxDef" HorizontalAlignment="Left" Margin="184,99,0,0" VerticalAlignment="Top" Width="120" HasDecimals="False" Maximum="5500" Minimum="0" NumericInputMode="Numbers" SnapToMultipleOfInterval="True" Value="{Binding TextboxMaxDefense, Mode=TwoWay}" Grid.ColumnSpan="3"/>
+                            <Controls:NumericUpDown x:Name="txt_minAtk" HorizontalAlignment="Left" Margin="10,35,0,0" VerticalAlignment="Top" Width="120" Maximum="5500" Minimum="0" NumericInputMode="Numbers" SnapToMultipleOfInterval="True" Value="{Binding TextboxMinAttack, Mode=TwoWay}" />
+                            <Controls:NumericUpDown x:Name="txt_maxAtk" HorizontalAlignment="Left" Margin="184,35,0,0" VerticalAlignment="Top" Width="120" Maximum="5500" Minimum="0" NumericInputMode="Numbers" SnapToMultipleOfInterval="True" Value="{Binding TextboxMaxAttack, Mode=TwoWay}" Grid.ColumnSpan="3"/>
+                            <Controls:NumericUpDown x:Name="txt_minDef" HorizontalAlignment="Left" Margin="10,99,0,0" VerticalAlignment="Top" Width="120" Maximum="5500" Minimum="0" NumericInputMode="Numbers" SnapToMultipleOfInterval="True" Value="{Binding TextboxMinDefense, Mode=TwoWay}"/>
+                            <Controls:NumericUpDown x:Name="txt_maxDef" HorizontalAlignment="Left" Margin="184,99,0,0" VerticalAlignment="Top" Width="120" Maximum="5500" Minimum="0" NumericInputMode="Numbers" SnapToMultipleOfInterval="True" Value="{Binding TextboxMaxDefense, Mode=TwoWay}" Grid.ColumnSpan="3"/>
                         </Grid>
                     </GroupBox>
-                    <GroupBox x:Name="grp_strchipcost" Header="STARCHIP COSTS" HorizontalAlignment="Left" Height="90" Margin="424,176,0,0" VerticalAlignment="Top" Width="324" FontWeight="Bold" IsEnabled="{Binding CheckboxRandomStarchips, Mode=OneWay}">
+                    <GroupBox x:Name="grp_strchipcost" Header="STARCHIP COSTS" HorizontalAlignment="Left" Height="100" Margin="424,176,0,0" VerticalAlignment="Top" Width="324" FontWeight="Bold" IsEnabled="{Binding CheckboxRandomStarchips, Mode=OneWay}">
                         <Grid x:Name="grid_grstrchipcost" HorizontalAlignment="Left" Height="66" Margin="10,0,0,-1" VerticalAlignment="Top" Width="300">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="41*"/>
                                 <ColumnDefinition Width="9*"/>
                             </Grid.ColumnDefinitions>
-                            <Controls:NumericUpDown x:Name="txt_maxCost" HorizontalAlignment="Left" Margin="180,30,0,0" VerticalAlignment="Top" Width="120" HasDecimals="False" Maximum="999999" Minimum="0" NumericInputMode="Numbers" SnapToMultipleOfInterval="True" Value="{Binding TextboxMaxCost, Mode=TwoWay}" Grid.ColumnSpan="2"/>
-                            <Controls:NumericUpDown x:Name="txt_minCost" HorizontalAlignment="Left" Margin="0,30,0,0" VerticalAlignment="Top" Width="120" HasDecimals="False" Maximum="999999" Minimum="0" NumericInputMode="Numbers" SnapToMultipleOfInterval="True" Value="{Binding TextboxMinCost, Mode=TwoWay}"/>
+                            <Controls:NumericUpDown x:Name="txt_maxCost" HorizontalAlignment="Left" Margin="180,30,0,0" VerticalAlignment="Top" Width="120" Maximum="999999" Minimum="0" NumericInputMode="Numbers" SnapToMultipleOfInterval="True" Value="{Binding TextboxMaxCost, Mode=TwoWay}" Grid.ColumnSpan="2"/>
+                            <Controls:NumericUpDown x:Name="txt_minCost" HorizontalAlignment="Left" Margin="0,30,0,0" VerticalAlignment="Top" Width="120" Maximum="999999" Minimum="0" NumericInputMode="Numbers" SnapToMultipleOfInterval="True" Value="{Binding TextboxMinCost, Mode=TwoWay}"/>
                             <Label Content="Min cost" HorizontalAlignment="Left" Margin="0,4,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.007,-0.171" Width="120" HorizontalContentAlignment="Center"/>
                             <Label Content="Max cost" HorizontalAlignment="Left" Margin="180,4,0,0" VerticalAlignment="Top" Width="120" HorizontalContentAlignment="Center" Grid.ColumnSpan="2"/>
                         </Grid>
@@ -122,7 +122,7 @@
                     </LinearGradientBrush>
                 </TabItem.Background>
                 <Grid Background="#FFE5E5E5">
-                    <GroupBox x:Name="grp_settings" Header="Options" HorizontalAlignment="Left" Height="256" Margin="10,10,0,0" VerticalAlignment="Top" Width="738" Background="#CC119EDA" Controls:ControlsHelper.HeaderFontSize="13" Controls:ControlsHelper.HeaderFontWeight="Medium">
+                    <GroupBox x:Name="grp_settings" Header="Options" HorizontalAlignment="Left" Height="256" Margin="10,10,0,0" VerticalAlignment="Top" Width="738" Controls:HeaderedControlHelper.HeaderFontSize="13" Controls:HeaderedControlHelper.HeaderFontWeight="Medium">
                         <Grid Margin="0">
                             <Label x:Name="lbl_isoExampleHeader" Content="Example:" HorizontalAlignment="Left" Margin="11,36,0,0" VerticalAlignment="Top" Width="53" Padding="2"/>
                             <CheckBox x:Name="chk_isoSeed" Content="Seed" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="{Binding CheckboxIsoSeed, Mode=TwoWay}"/>
@@ -132,12 +132,12 @@
                             <CheckBox Content="Spoiler files" HorizontalAlignment="Left" Margin="199,10,0,0" VerticalAlignment="Top" IsChecked="{Binding CheckboxSpoilerFiles, Mode=TwoWay}"/>
                             <GroupBox Header="Drop count" HorizontalAlignment="Left" Height="67" Margin="10,84,0,0" VerticalAlignment="Top" Width="132">
                                 <Grid HorizontalAlignment="Left" Height="56" Margin="0,-27,0,-3" VerticalAlignment="Top" Width="381">
-                                    <Controls:NumericUpDown x:Name="txt_dropCount" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" HasDecimals="False" Maximum="15" Minimum="1" NumericInputMode="Numbers" SnapToMultipleOfInterval="True" Value="{Binding TextboxDropCount, Mode=TwoWay}" Margin="0,28,0,0" ToolTip="Values can be 1 to 15"/>
+                                    <Controls:NumericUpDown x:Name="txt_dropCount" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Maximum="15" Minimum="1" NumericInputMode="Numbers" SnapToMultipleOfInterval="True" Value="{Binding TextboxDropCount, Mode=TwoWay}" Margin="0,28,0,0" ToolTip="Values can be 1 to 15"/>
                                 </Grid>
                             </GroupBox>
                             <GroupBox Header="Star chip per Duel" HorizontalAlignment="Left" Height="67" Margin="161,84,0,0" VerticalAlignment="Top" Width="132">
                                 <Grid HorizontalAlignment="Left" Height="56" Margin="0,-27,0,-3" VerticalAlignment="Top" Width="381">
-                                    <Controls:NumericUpDown x:Name="txt_starChipsDuel" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" HasDecimals="False" Maximum="65535" Minimum="5" NumericInputMode="Numbers" SnapToMultipleOfInterval="True" Value="{Binding TextboxStarChipsDuel, Mode=TwoWay}" Margin="0,28,0,0" ToolTip="How much starchips you can have per duel"/>
+                                    <Controls:NumericUpDown x:Name="txt_starChipsDuel" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Maximum="65535" Minimum="5" NumericInputMode="Numbers" SnapToMultipleOfInterval="True" Value="{Binding TextboxStarChipsDuel, Mode=TwoWay}" Margin="0,28,0,0" ToolTip="How much starchips you can have per duel"/>
                                 </Grid>
                             </GroupBox>
                         </Grid>
@@ -156,7 +156,7 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <Label x:Name="lbl_copyleft_Copy" Content="http://github.com/duke1102/fmscrambler" FontSize="11" HorizontalContentAlignment="Center" Margin="10,336,542,28" VerticalContentAlignment="Center" Height="17" Padding="0" Width="232"/>
+        <Label x:Name="lbl_copyleft_Copy" Content="http://github.com/duke1102/fmscrambler" FontSize="11" HorizontalContentAlignment="Center" Margin="13,351,545,15" VerticalContentAlignment="Center" Height="17" Padding="0" Width="232"/>
         <Canvas x:Name="pgr_back" Background="#C1000000" Visibility="Hidden">
             <Controls:ProgressRing x:Name="pgr1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="211" Width="231" OpacityMask="Black" Canvas.Left="209" Canvas.Top="103">
                 <Controls:ProgressRing.Effect>
@@ -164,7 +164,7 @@
                 </Controls:ProgressRing.Effect>
             </Controls:ProgressRing>
         </Canvas>
-        <Label x:Name="lbl_version" Content="{Binding VersionMeta, Mode=OneTime}" FontSize="11" HorizontalContentAlignment="Center" Margin="0,340,10,24" VerticalContentAlignment="Center" Height="17" Padding="0" Width="118" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+        <Label x:Name="lbl_version" Content="{Binding VersionMeta, Mode=OneTime}" FontSize="11" HorizontalContentAlignment="Center" Margin="662,351,0,0" VerticalContentAlignment="Center" Height="17" Padding="0" Width="118" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
     </Grid>
 </Controls:MetroWindow>
