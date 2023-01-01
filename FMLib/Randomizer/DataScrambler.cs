@@ -44,9 +44,21 @@ namespace FMLib.Randomizer
         /// <summary>
         /// 
         /// </summary>
+        /// <returns></returns>
+        public int GetRandomNext()
+        {
+            lock (_random)
+            {
+                return _random.Next();
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="hexString"></param>
         /// <returns></returns>
-        private static byte[] ConvertHexStringToByteArray(string hexString)
+        private byte[] ConvertHexStringToByteArray(string hexString)
         {
             if ((hexString.Length % 2) > 0)
             {
@@ -69,7 +81,7 @@ namespace FMLib.Randomizer
         /// <param name="bytes"></param>
         /// <param name="offset"></param>
         /// <param name="hexString"></param>
-        private static void PutHex(byte[] bytes, int offset, string hexString)
+        private void PutHex(byte[] bytes, int offset, string hexString)
         {
             var sourceArray = ConvertHexStringToByteArray(hexString);
 
@@ -476,7 +488,7 @@ namespace FMLib.Randomizer
         /// 
         /// </summary>
         /// <param name="cardType"></param>
-        public static bool IsMonsterCard(int cardType)
+        public bool IsMonsterCard(int cardType)
         {
             return cardType >= (int)Static.Type.Dragon && cardType <= (int)Static.Type.Plant;
         }
@@ -664,7 +676,7 @@ namespace FMLib.Randomizer
         /// </summary>
         /// <param name="randomSize"></param>
         /// <returns></returns>
-        private static int GetMaximum(int randomSize)
+        private int GetMaximum(int randomSize)
         {
             var result = 0;
 
@@ -796,8 +808,9 @@ namespace FMLib.Randomizer
                     // Limpamos a lista antiga.
                     Array.Clear(t1.Deck, 0, Static.MaxCards);
 
-                    // Buscamos todas as cartas.
+                    // Buscamos todas as cartas, exceto cartas de tipo ritual.
                     var allCardsId = Static.Cards
+                        .Where(x => x.Type != (int)Static.Type.Ritual)
                         .Select(y => y.Id)
                         .OrderBy(z => _random.Next())
                         .ToList();

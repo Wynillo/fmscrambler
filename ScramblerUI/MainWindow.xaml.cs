@@ -13,6 +13,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
+using System.Linq;
 using FMLib.Disc;
 using FMLib.Randomizer;
 using FMLib.Utility;
@@ -64,15 +65,28 @@ namespace FMScrambler
 
         private void LoadCardsFilters()
         {
-            var fileHandler = new DataScrambler(int.Parse(txt_seed.Text));
+            var dataScrambler = new DataScrambler(int.Parse(txt_seed.Text));
             var cardBanList = new List<dynamic>();
 
-            fileHandler.LoadDataFromSlus();
-            fileHandler.LoadDataFromWaMrg();
+            dataScrambler.LoadDataFromSlus();
+            dataScrambler.LoadDataFromWaMrg();
 
-            foreach (var card in Static.Cards)
+            var allMonsters = Static.Cards
+                .Where(x => dataScrambler.IsMonsterCard(x.Type))
+                .Select(y => new
+                {
+                    y.Id,
+                    y.Name,
+                    y.Description,
+                    y.Attack,
+                    y.Defense,
+                    y.BigImage
+                })
+                .ToList();
+
+            foreach (var card in allMonsters)
             {
-                cardBanList.Add(new { card.Id, card.Name, card.Description, Image = card.BigImage.CreateUnsafeBitmap() });
+                cardBanList.Add(new { card.Id, card.Name, Description = card.Description + $"\n\nATK: {card.Attack} \nDEF: {card.Defense}", Image = card.BigImage.CreateUnsafeBitmap() });
             }
 
             listb_cardsFilters.ItemsSource = cardBanList;
