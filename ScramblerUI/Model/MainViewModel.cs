@@ -38,6 +38,8 @@ namespace FMScrambler.Model
         private bool _checkboxIsoDate;
         private bool _checkboxIsoOptions;
         private bool _checkboxSpoilerFiles = true;
+        private bool _checkboxStarterDeckAtkDefFilter;
+        private bool _checkboxDuelistDeckAtkDefFilter;
         private string _labelIsoExample = "fmscrambler[12345678].bin";
 
         public string LabelPath
@@ -177,6 +179,28 @@ namespace FMScrambler.Model
                 Static.RandomNames = value;
                 PropertyChanged(this, new PropertyChangedEventArgs("CheckboxRandomNames"));
                 onIsoCheckbox();
+            }
+        }
+
+        public bool CheckboxStarterDeckAtkDefFilter
+        {
+            get => _checkboxStarterDeckAtkDefFilter;
+            set
+            {
+                _checkboxStarterDeckAtkDefFilter = value;
+                Static.FilterStarterDeckCards.EnableAtkDef = value;
+                PropertyChanged(this, new PropertyChangedEventArgs("CheckboxStarterDeckAtkDefFilter"));
+            }
+        }
+
+        public bool CheckboxDuelistDeckAtkDefFilter
+        {
+            get => _checkboxDuelistDeckAtkDefFilter;
+            set
+            {
+                _checkboxDuelistDeckAtkDefFilter = value;
+                Static.FilterDuelistDeckCards.EnableAtkDef = value;
+                PropertyChanged(this, new PropertyChangedEventArgs("CheckboxDuelistDeckAtkDefFilter"));
             }
         }
 

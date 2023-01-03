@@ -89,8 +89,8 @@ namespace FMScrambler
                 cardBanList.Add(new { card.Id, card.Name, Description = card.Description + $"\n\nATK: {card.Attack} \nDEF: {card.Defense}", Image = card.BigImage.CreateUnsafeBitmap() });
             }
 
-            listb_cardsFilters.ItemsSource = cardBanList;
-            listb_cardsFilters.IsEnabled = true;
+            listb_staterdeckcardsFilters.ItemsSource = cardBanList;
+            listb_staterdeckcardsFilters.IsEnabled = true;
             tab_cardsFilters.IsEnabled = true;
         }
 
@@ -111,7 +111,11 @@ namespace FMScrambler
                     fileHandler.PerformScrambling((int)txt_minAtk.Value, (int)txt_maxAtk.Value,
                         (int)txt_minDef.Value, (int)txt_maxDef.Value, (int)txt_minCost.Value,
                         (int)txt_maxCost.Value, (int)txt_minDropRate.Value, (int)txt_maxDropRate.Value,
-                        (int)txt_dropCount.Value, (ushort)txt_starChipsDuel.Value);
+                        (int)txt_dropCount.Value, (ushort)txt_starChipsDuel.Value,
+                        (int)txt_minAtkStarterDeck.Value, (int)txt_maxAtkStarterDeck.Value,
+                        (int)txt_minDefStarterDeck.Value, (int)txt_maxDefStarterDeck.Value,
+                        (int)txt_minAtkDuelistDeck.Value, (int)txt_maxAtkDuelistDeck.Value,
+                        (int)txt_minDefDuelistDeck.Value, (int)txt_maxDefDuelistDeck.Value);
                 });
 
             MessageBox.Show("Done scrambling, you may proceed with patching your game ISO now." + (Static.Spoiler ? " Spoiler files were generated as well" : ""),
@@ -438,7 +442,7 @@ namespace FMScrambler
                         {
                             for (int i = 0; i < Static.FilterStarterDeckCards.BannedCards.Count; i++)
                             {
-                                listb_cardsFilters.SelectedItems.Add(Static.FilterStarterDeckCards.BannedCards[i]);
+                                listb_staterdeckcardsFilters.SelectedItems.Add(Static.FilterStarterDeckCards.BannedCards[i]);
                             }
                         }
                     }
@@ -449,16 +453,16 @@ namespace FMScrambler
                         img_bannedCardId.Source = null;
                         img_bannedCardId.Visibility = Visibility.Hidden;
 
-                        if (listb_cardsFilters.SelectedItems.Count > 0)
+                        if (listb_staterdeckcardsFilters.SelectedItems.Count > 0)
                         {
                             Static.FilterStarterDeckCards.BannedCards.Clear();
 
-                            for (int i = 0; i < listb_cardsFilters.SelectedItems.Count; i++)
+                            for (int i = 0; i < listb_staterdeckcardsFilters.SelectedItems.Count; i++)
                             {
-                                Static.FilterStarterDeckCards.BannedCards.Add(listb_cardsFilters.SelectedItems[i]);
+                                Static.FilterStarterDeckCards.BannedCards.Add(listb_staterdeckcardsFilters.SelectedItems[i]);
                             }
 
-                            listb_cardsFilters.SelectedItems.Clear();
+                            listb_staterdeckcardsFilters.SelectedItems.Clear();
                         }
                     }
                 }

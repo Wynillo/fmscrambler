@@ -35,5 +35,10 @@ namespace FMLib.Models
         /// 
         /// </summary>
         public int MaximumDefense { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool EnableAtkDef { get; set; }
     }
 }

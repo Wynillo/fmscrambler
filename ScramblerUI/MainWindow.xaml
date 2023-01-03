@@ -163,8 +163,8 @@
                     </LinearGradientBrush>
                 </TabItem.Background>
                 <Grid Background="#FFE5E5E5">
-                    <GroupBox Header="Banned Cards" Height="160" Width="320" Margin="10,10,428,115">
-                        <ListBox x:Name="listb_cardsFilters" IsEnabled="False" SelectionMode="Multiple">
+                    <GroupBox Header="Banned Cards Starter Deck Filter" Width="320" Margin="5,5,433,98">
+                        <ListBox x:Name="listb_staterdeckcardsFilters" IsEnabled="False" SelectionMode="Multiple">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel MouseEnter="stackp_cardsFiltersImage_MouseEnter">
@@ -174,7 +174,39 @@
                             </ListBox.ItemTemplate>
                         </ListBox>
                     </GroupBox>
-                    <Image x:Name="img_bannedCardId" Width="102" Height="96" Margin="343,13,313,176" Visibility="Hidden"/>
+                    <GroupBox Header="Card image" Margin="330,5,297,5">
+                        <Image x:Name="img_bannedCardId" Width="102" VerticalAlignment="Top" Height="96" Visibility="Hidden"/>
+                    </GroupBox>
+                    <GroupBox Header="ATK/DEF Starter Deck Filter" HorizontalAlignment="Left" Height="137" Margin="466,5,0,0" VerticalAlignment="Top" Width="282" Controls:HeaderedControlHelper.HeaderFontSize="13" Controls:HeaderedControlHelper.HeaderFontWeight="Medium" FontWeight="Bold" IsEnabled="{Binding CheckboxStarterDeckAtkDefFilter}">
+                        <Grid UseLayoutRounding="False" Margin="0" >
+                            <Label Content="Min. ATK" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,1,0,0" Width="120" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                            <Label Content="Max. ATK" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,1,0,0" Width="120" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                            <Label Content="Min. DEF" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,50,0,0" Width="120" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                            <Label Content="Max. DEF" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,50,0,0" Width="120" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                            <Controls:NumericUpDown x:Name="txt_minAtkStarterDeck" HorizontalAlignment="Left" Margin="5,20,0,0" VerticalAlignment="Top" Width="120" Maximum="5500" Minimum="0" NumericInputMode="Numbers" SnapToMultipleOfInterval="True"/>
+                            <Controls:NumericUpDown x:Name="txt_maxAtkStarterDeck" HorizontalAlignment="Left" Margin="150,20,0,0" VerticalAlignment="Top" Width="120" Maximum="5500" Minimum="1400" NumericInputMode="Numbers" SnapToMultipleOfInterval="True"/>
+                            <Controls:NumericUpDown x:Name="txt_minDefStarterDeck" HorizontalAlignment="Left" Margin="5,68,0,0" VerticalAlignment="Top" Width="120" Maximum="5500" Minimum="0" NumericInputMode="Numbers" SnapToMultipleOfInterval="True"/>
+                            <Controls:NumericUpDown x:Name="txt_maxDefStarterDeck" HorizontalAlignment="Left" Margin="150,68,0,0" VerticalAlignment="Top" Width="120" Maximum="5500" Minimum="1400" NumericInputMode="Numbers" SnapToMultipleOfInterval="True"/>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Header="ATK/DEF Duelist Deck Filter" HorizontalAlignment="Left" Height="132" Margin="466,148,0,0" VerticalAlignment="Top" Width="282" Controls:HeaderedControlHelper.HeaderFontSize="13" Controls:HeaderedControlHelper.HeaderFontWeight="Medium" FontWeight="Bold" IsEnabled="{Binding CheckboxDuelistDeckAtkDefFilter}">
+                        <Grid UseLayoutRounding="False" Margin="0" >
+                            <Label Content="Min. ATK" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,1,0,0" Width="120" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                            <Label Content="Max. ATK" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,1,0,0" Width="120" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                            <Label Content="Min. DEF" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,50,0,0" Width="120" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                            <Label Content="Max. DEF" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,50,0,0" Width="120" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                            <Controls:NumericUpDown x:Name="txt_minAtkDuelistDeck" HorizontalAlignment="Left" Margin="5,20,0,0" VerticalAlignment="Top" Width="120" Maximum="5500" Minimum="0" NumericInputMode="Numbers" SnapToMultipleOfInterval="True"/>
+                            <Controls:NumericUpDown x:Name="txt_maxAtkDuelistDeck" HorizontalAlignment="Left" Margin="150,20,0,0" VerticalAlignment="Top" Width="120" Maximum="5500" Minimum="1400" NumericInputMode="Numbers" SnapToMultipleOfInterval="True"/>
+                            <Controls:NumericUpDown x:Name="txt_minDefDuelistDeck" HorizontalAlignment="Left" Margin="5,68,0,0" VerticalAlignment="Top" Width="120" Maximum="5500" Minimum="0" NumericInputMode="Numbers" SnapToMultipleOfInterval="True"/>
+                            <Controls:NumericUpDown x:Name="txt_maxDefDuelistDeck" HorizontalAlignment="Left" Margin="150,68,0,0" VerticalAlignment="Top" Width="120" Maximum="5500" Minimum="1400" NumericInputMode="Numbers" SnapToMultipleOfInterval="True"/>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Header="Filter Options" HorizontalAlignment="Left" Controls:HeaderedControlHelper.HeaderFontSize="13" Controls:HeaderedControlHelper.HeaderFontWeight="Medium" FontWeight="Bold" Margin="5,192,0,5" Width="320">
+                        <Grid Margin="0,0,-2,5">
+                            <CheckBox x:Name="chk_starterdeckatkdef" Content="Enable Starter Deck ATK/DEF Filter" VerticalAlignment="Top" IsChecked="{Binding CheckboxStarterDeckAtkDefFilter, Mode=TwoWay}" Grid.ColumnSpan="2"/>
+                            <CheckBox x:Name="chk_duelistdeckatkdef" Content="Enable Duelist Deck ATK/DEF Filter" VerticalAlignment="Top" IsChecked="{Binding CheckboxDuelistDeckAtkDefFilter, Mode=TwoWay}" Margin="0,23,0,0" Grid.ColumnSpan="2"/>
+                        </Grid>
+                    </GroupBox>
                 </Grid>
             </TabItem>
         </TabControl>

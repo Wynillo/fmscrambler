@@ -709,6 +709,11 @@ namespace FMLib.Randomizer
         {
             if (Static.RandomCardDrops)
             {
+                var allCardsId = Static.Cards
+                    .Select(y => y.Id)
+                    .OrderBy(z => _random.Next())
+                    .ToList();
+
                 foreach (Duelist t1 in Static.Duelist)
                 {
                     // Limpamos a lista antiga.
@@ -717,11 +722,6 @@ namespace FMLib.Randomizer
                     Array.Clear(t1.Drop.SaTec, 0, Static.MaxCards);
 
                     // BCD - POW/TEC
-                    var allCardsId = Static.Cards
-                        .Select(y => y.Id)
-                        .OrderBy(z => _random.Next())
-                        .ToList();
-
                     var randomSize = GetRandomNumber(20, 160);
 
                     if (randomSize * maxDropRate < Static.MaxRateDrop)
@@ -733,19 +733,30 @@ namespace FMLib.Randomizer
 
                     foreach (var randomNumber in randomNumbersArray)
                     {
-                        int randomIndex = GetRandomNumber(0, allCardsId.Count());
+                        if (allCardsId.Count > 0)
+                        {
+                            int randomIndex = GetRandomNumber(0, allCardsId.Count());
 
-                        t1.Drop.BcdPow[allCardsId.ElementAt(randomIndex) - 1] = randomNumber;
+                            t1.Drop.BcdPow[allCardsId.ElementAt(randomIndex) - 1] += randomNumber;
 
-                        allCardsId.RemoveAt(randomIndex);
+                            allCardsId.RemoveAt(randomIndex);
+                        }
+                        else
+                        {
+                            allCardsId = Static.Cards
+                                .Select(y => y.Id)
+                                .OrderBy(z => _random.Next())
+                                .ToList();
+
+                            int randomIndex = GetRandomNumber(0, allCardsId.Count());
+
+                            t1.Drop.BcdPow[allCardsId.ElementAt(randomIndex) - 1] += randomNumber;
+
+                            allCardsId.RemoveAt(randomIndex);
+                        }
                     }
 
                     // SA - POW
-                    allCardsId = Static.Cards
-                        .Select(y => y.Id)
-                        .OrderBy(z => _random.Next())
-                        .ToList();
-
                     randomSize = GetRandomNumber(20, 160);
 
                     if (randomSize * maxDropRate < Static.MaxRateDrop)
@@ -757,19 +768,30 @@ namespace FMLib.Randomizer
 
                     foreach (var randomNumber in randomNumbersArray)
                     {
-                        int randomIndex = GetRandomNumber(0, allCardsId.Count());
+                        if (allCardsId.Count > 0)
+                        {
+                            int randomIndex = GetRandomNumber(0, allCardsId.Count());
 
-                        t1.Drop.SaPow[allCardsId.ElementAt(randomIndex) - 1] = randomNumber;
+                            t1.Drop.SaPow[allCardsId.ElementAt(randomIndex) - 1] += randomNumber;
 
-                        allCardsId.RemoveAt(randomIndex);
+                            allCardsId.RemoveAt(randomIndex);
+                        }
+                        else
+                        {
+                            allCardsId = Static.Cards
+                                .Select(y => y.Id)
+                                .OrderBy(z => _random.Next())
+                                .ToList();
+
+                            int randomIndex = GetRandomNumber(0, allCardsId.Count());
+
+                            t1.Drop.SaPow[allCardsId.ElementAt(randomIndex) - 1] += randomNumber;
+
+                            allCardsId.RemoveAt(randomIndex);
+                        }
                     }
 
                     // SA - TEC
-                    allCardsId = Static.Cards
-                        .Select(y => y.Id)
-                        .OrderBy(z => _random.Next())
-                        .ToList();
-
                     randomSize = GetRandomNumber(20, 160);
 
                     if (randomSize * maxDropRate < Static.MaxRateDrop)
@@ -781,11 +803,27 @@ namespace FMLib.Randomizer
 
                     foreach (var randomNumber in randomNumbersArray)
                     {
-                        int randomIndex = GetRandomNumber(0, allCardsId.Count());
+                        if (allCardsId.Count > 0)
+                        {
+                            int randomIndex = GetRandomNumber(0, allCardsId.Count());
 
-                        t1.Drop.SaTec[allCardsId.ElementAt(randomIndex) - 1] = randomNumber;
+                            t1.Drop.SaTec[allCardsId.ElementAt(randomIndex) - 1] += randomNumber;
 
-                        allCardsId.RemoveAt(randomIndex);
+                            allCardsId.RemoveAt(randomIndex);
+                        }
+                        else
+                        {
+                            allCardsId = Static.Cards
+                                .Select(y => y.Id)
+                                .OrderBy(z => _random.Next())
+                                .ToList();
+
+                            int randomIndex = GetRandomNumber(0, allCardsId.Count());
+
+                            t1.Drop.SaTec[allCardsId.ElementAt(randomIndex) - 1] += randomNumber;
+
+                            allCardsId.RemoveAt(randomIndex);
+                        }
                     }
                 }
             }
@@ -808,9 +846,16 @@ namespace FMLib.Randomizer
                     // Limpamos a lista antiga.
                     Array.Clear(t1.Deck, 0, Static.MaxCards);
 
-                    // Buscamos todas as cartas, exceto cartas de tipo ritual.
+                    // Buscamos todas as cartas, exceto cartas de tipo ritual
+                    // e aplicamos o filtro de ATK/DEF caso exista.
                     var allCardsId = Static.Cards
-                        .Where(x => x.Type != (int)Static.Type.Ritual)
+                        .Where(x => x.Type != (int)Static.Type.Ritual
+                            && ((Static.FilterDuelistDeckCards.EnableAtkDef == true
+                                && x.Attack >= Static.FilterDuelistDeckCards.MinimumAttack
+                                && x.Attack <= Static.FilterDuelistDeckCards.MaximumAttack
+                                && x.Defense >= Static.FilterDuelistDeckCards.MinimumDefense
+                                && x.Defense <= Static.FilterDuelistDeckCards.MaximumDefense)
+                                || Static.FilterDuelistDeckCards.EnableAtkDef == false))
                         .Select(y => y.Id)
                         .OrderBy(z => _random.Next())
                         .ToList();
@@ -848,15 +893,22 @@ namespace FMLib.Randomizer
                     // Limpamos a lista antiga.
                     Array.Clear(Static.StarterDeck[i].Cards, 0, Static.MaxCards);
 
-                    // Buscamos todos os monstros existentes.
+                    // Buscamos todos os monstros existentes
+                    // e aplicamos os filtros de ATK/DEF caso existam.
                     var allMonstersId = Static.Cards
-                        .Where(x => IsMonsterCard(x.Type))
+                        .Where(x => IsMonsterCard(x.Type)
+                            && ((Static.FilterStarterDeckCards.EnableAtkDef == true
+                                && x.Attack >= Static.FilterStarterDeckCards.MinimumAttack
+                                && x.Attack <= Static.FilterStarterDeckCards.MaximumAttack
+                                && x.Defense >= Static.FilterStarterDeckCards.MinimumDefense
+                                && x.Defense <= Static.FilterStarterDeckCards.MaximumDefense)
+                                || Static.FilterStarterDeckCards.EnableAtkDef == false))
                         .Select(y => y.Id)
                         .OrderBy(z => _random.Next())
                         .ToList();
 
                     var allBannedCards = Static.FilterStarterDeckCards.BannedCards
-                        .Select(x => TypeDescriptor.GetProperties(x)["Id"].GetValue(x) as int?).ToList();
+                        .Select(x => TypeDescriptor.GetProperties(x)["Id"].GetValue(x) as int? ?? 0).ToList();
 
                     allMonstersId = allMonstersId
                         .Where(x => allBannedCards.Contains(x) == false)
@@ -1433,6 +1485,7 @@ namespace FMLib.Randomizer
                 logStream.WriteLine("====================================================================");
                 logStream.WriteLine($"{d.Name} S/A-Tec drops");
                 logStream.WriteLine($"Possibilities: {d.Drop.SaTec.Sum(x => x > 0 ? 1 : 0)}");
+                logStream.WriteLine($"Total Rate: {d.Drop.SaTec.Sum()}");
 
                 var drop_map = sat_d_map[d];
 
@@ -1446,6 +1499,7 @@ namespace FMLib.Randomizer
                 logStream.WriteLine("====================================================================");
                 logStream.WriteLine($"{d.Name} B/C/D drops");
                 logStream.WriteLine($"Possibilities: {d.Drop.BcdPow.Sum(x => x > 0 ? 1 : 0)}");
+                logStream.WriteLine($"Total Rate: {d.Drop.BcdPow.Sum()}");
 
                 drop_map = bcd_d_map[d];
 
@@ -1459,6 +1513,7 @@ namespace FMLib.Randomizer
                 logStream.WriteLine("====================================================================");
                 logStream.WriteLine($"{d.Name} S/A-Pow drops");
                 logStream.WriteLine($"Possibilities: {d.Drop.SaPow.Sum(x => x > 0 ? 1 : 0)}");
+                logStream.WriteLine($"Total Rate: {d.Drop.SaPow.Sum()}");
 
                 drop_map = sap_d_map[d];
 
@@ -1523,6 +1578,7 @@ namespace FMLib.Randomizer
                 logStream.WriteLine("====================================================================");
                 logStream.WriteLine($"Starter Deck Part: {i + 1}");
                 logStream.WriteLine($"Possibilities: {d.Cards.Sum(x => x > 0 ? 1 : 0)}");
+                logStream.WriteLine($"Total Rate: {d.Cards.Sum()}");
 
                 var drop_map = starter_deck_map[d];
 
@@ -1589,6 +1645,7 @@ namespace FMLib.Randomizer
                 logStream.WriteLine("====================================================================");
                 logStream.WriteLine($"{d.Name} Deck");
                 logStream.WriteLine($"Possibilities: {d.Deck.Sum(x => x > 0 ? 1 : 0)}");
+                logStream.WriteLine($"Total Rate: {d.Deck.Sum()}");
 
                 var drop_map = duelist_deck_map[d];
 
@@ -1678,7 +1735,6 @@ namespace FMLib.Randomizer
             logStream.Close();
         }
 
-
         /// <summary>
         /// 
         /// </summary>
@@ -1692,9 +1748,51 @@ namespace FMLib.Randomizer
         /// <param name="maxDropRate"></param>
         /// <param name="dropCount"></param>
         /// <param name="starChipsDuel"></param>
+        /// <param name="minAtkStarter"></param>
+        /// <param name="maxAtkStarter"></param>
+        /// <param name="minDefStarter"></param>
+        /// <param name="maxDefStarter"></param>
+        /// <param name="minAtkDuelist"></param>
+        /// <param name="maxAtkDuelist"></param>
+        /// <param name="minDefDuelist"></param>
+        /// <param name="maxDefDuelist"></param>
         /// <returns></returns>
-        public bool PerformScrambling(int minAtk = 0, int maxAtk = 0, int minDef = 0, int maxDef = 0, int minCost = 0, int maxCost = 999999, int minDropRate = 1, int maxDropRate = 1, int dropCount = 1, ushort starChipsDuel = 5)
+        public bool PerformScrambling(
+            int minAtk = 0,
+            int maxAtk = 0,
+            int minDef = 0,
+            int maxDef = 0,
+            int minCost = 0,
+            int maxCost = 999999,
+            int minDropRate = 1,
+            int maxDropRate = 1,
+            int dropCount = 1,
+            ushort starChipsDuel = 5,
+            int minAtkStarter = 0,
+            int maxAtkStarter = 0,
+            int minDefStarter = 0,
+            int maxDefStarter = 0,
+            int minAtkDuelist = 0,
+            int maxAtkDuelist = 0,
+            int minDefDuelist = 0,
+            int maxDefDuelist = 0)
         {
+            if (Static.FilterStarterDeckCards.EnableAtkDef)
+            {
+                Static.FilterStarterDeckCards.MinimumAttack = minAtkStarter;
+                Static.FilterStarterDeckCards.MaximumAttack = maxAtkStarter;
+                Static.FilterStarterDeckCards.MinimumDefense = minDefStarter;
+                Static.FilterStarterDeckCards.MaximumDefense = maxDefStarter;
+            }
+
+            if (Static.FilterDuelistDeckCards.EnableAtkDef)
+            {
+                Static.FilterDuelistDeckCards.MinimumAttack = minAtkDuelist;
+                Static.FilterDuelistDeckCards.MaximumAttack = maxAtkDuelist;
+                Static.FilterDuelistDeckCards.MinimumDefense = minDefDuelist;
+                Static.FilterDuelistDeckCards.MaximumDefense = maxDefDuelist;
+            }
+
             RandomizeFusions();
             RandomizeCardInfo(minAtk, maxAtk, minDef, maxDef, minCost, maxCost);
             RandomizeCardDrops(minDropRate, maxDropRate);
