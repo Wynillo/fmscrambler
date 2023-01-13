@@ -982,8 +982,8 @@ namespace FMLib.Randomizer
                                 {
                                     num4 = (card.Fusions[i + 1].Cards2 + 1) & byte.MaxValue;
                                     num5 = (card.Fusions[i + 1].Result + 1) & byte.MaxValue;
-                                    num6 |= (card.Fusions[i + 1].Cards2 + 1 >> 8 & 3) << 4 |
-                                            (card.Fusions[i + 1].Result + 1 >> 8 & 3) << 6;
+                                    num6 |= ((((card.Fusions[i + 1].Cards2 + 1) >> 8) & 3) << 4) |
+                                            ((((card.Fusions[i + 1].Result + 1) >> 8) & 3) << 6);
                                     ++i;
                                 }
 
