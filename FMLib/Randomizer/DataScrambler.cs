@@ -303,12 +303,12 @@ namespace FMLib.Randomizer
                         int num5 = memStream.ReadByte();
                         int num6 = memStream.ReadByte();
                         int num7 = memStream.ReadByte();
-                        int num9 = ((num7 & 3) << 8) | num3;
-                        int num11 = (((num7 >> 2) & 3) << 8) | num4;
-                        int num13 = (((num7 >> 4) & 3) << 8) | num5;
-                        int num15 = (((num7 >> 6) & 3) << 8) | num6;
+                        int num9 = (num3 & 3) << 8 | num4;
+                        int num11 = (num3 >> 2 & 3) << 8 | num5;
+                        int num13 = (num3 >> 4 & 3) << 8 | num6;
+                        int num15 = (num3 >> 6 & 3) << 8 | num7;
 
-                        Static.Cards[i].Fusions.Add(new Fusion(i + 1, num9 - 1, num11 - 1));
+                        Static.Cards[i].Fusions.Add(new Fusion(i + 1, num9, num11));
                         --num2;
 
                         if (num2 <= 0)
@@ -316,7 +316,7 @@ namespace FMLib.Randomizer
                             continue;
                         }
 
-                        Static.Cards[i].Fusions.Add(new Fusion(i + 1, num13 - 1, num15 - 1));
+                        Static.Cards[i].Fusions.Add(new Fusion(i + 1, num13, num15));
                         --num2;
                     }
                 }
@@ -972,18 +972,18 @@ namespace FMLib.Randomizer
 
                             for (int i = 0; i < card.Fusions.Count; ++i)
                             {
-                                int num2 = (card.Fusions[i].Cards2 + 1) & byte.MaxValue;
-                                int num3 = (card.Fusions[i].Result + 1) & byte.MaxValue;
+                                int num2 = card.Fusions[i].Cards2 + 1 & byte.MaxValue;
+                                int num3 = card.Fusions[i].Result + 1 & byte.MaxValue;
                                 int num4 = 0;
                                 int num5 = 0;
-                                int num6 = (((card.Fusions[i].Cards2 + 1) >> 8) & 3) | ((((card.Fusions[i].Result + 1) >> 8) & 3) << 2);
+                                int num6 = card.Fusions[i].Cards2 + 1 >> 8 & 3 | (card.Fusions[i].Result + 1 >> 8 & 3) << 2;
 
                                 if (i < card.Fusions.Count - 1)
                                 {
-                                    num4 = (card.Fusions[i + 1].Cards2 + 1) & byte.MaxValue;
-                                    num5 = (card.Fusions[i + 1].Result + 1) & byte.MaxValue;
-                                    num6 |= ((((card.Fusions[i + 1].Cards2 + 1) >> 8) & 3) << 4) |
-                                            ((((card.Fusions[i + 1].Result + 1) >> 8) & 3) << 6);
+                                    num4 = card.Fusions[i + 1].Cards2 + 1 & byte.MaxValue;
+                                    num5 = card.Fusions[i + 1].Result + 1 & byte.MaxValue;
+                                    num6 |= (card.Fusions[i + 1].Cards2 + 1 >> 8 & 3) << 4 |
+                                            (card.Fusions[i + 1].Result + 1 >> 8 & 3) << 6;
                                     ++i;
                                 }
 
