@@ -137,7 +137,7 @@
                             </GroupBox>
                             <GroupBox Header="Star chip per Duel" HorizontalAlignment="Left" Height="67" Margin="161,84,0,0" VerticalAlignment="Top" Width="132">
                                 <Grid HorizontalAlignment="Left" Height="56" Margin="0,-27,0,-3" VerticalAlignment="Top" Width="381">
-                                    <Controls:NumericUpDown x:Name="txt_starChipsDuel" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Maximum="65535" Minimum="5" NumericInputMode="Numbers" SnapToMultipleOfInterval="True" Value="{Binding TextboxStarChipsDuel, Mode=TwoWay}" Margin="0,28,0,0" ToolTip="How much starchips you can have per duel"/>
+                                    <Controls:NumericUpDown x:Name="txt_starChipsDuel" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Maximum="65535" Minimum="5" NumericInputMode="Numbers" SnapToMultipleOfInterval="True" Value="{Binding TextboxStarChipsDuel, Mode=TwoWay}" Margin="0,28,0,0" ToolTip="How much starchips you can have per duel" IsEnabled="False"/>
                                 </Grid>
                             </GroupBox>
                         </Grid>
