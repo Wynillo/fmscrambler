@@ -860,6 +860,13 @@ namespace FMLib.Randomizer
                         .OrderBy(z => _random.Next())
                         .ToList();
 
+                    var allBannedCards = Static.FilterDuelistDeckCards.BannedCards
+                        .Select(x => TypeDescriptor.GetProperties(x)["Id"].GetValue(x) as int? ?? 0).ToList();
+
+                    allCardsId = allCardsId
+                        .Where(x => allBannedCards.Contains(x) == false)
+                        .ToList();
+
                     foreach (var randomNumber in randomNumbersArray)
                     {
                         int randomIndex = GetRandomNumber(0, allCardsId.Count());
@@ -1579,6 +1586,7 @@ namespace FMLib.Randomizer
                 logStream.WriteLine($"Starter Deck Part: {i + 1}");
                 logStream.WriteLine($"Possibilities: {d.Cards.Sum(x => x > 0 ? 1 : 0)}");
                 logStream.WriteLine($"Total Rate: {d.Cards.Sum()}");
+                logStream.WriteLine($"Total Get Cards: {d.Dropped}");
 
                 var drop_map = starter_deck_map[d];
 

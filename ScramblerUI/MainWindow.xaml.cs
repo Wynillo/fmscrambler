@@ -66,13 +66,13 @@ namespace FMScrambler
         private void LoadCardsFilters()
         {
             var dataScrambler = new DataScrambler(int.Parse(txt_seed.Text));
-            var cardBanList = new List<dynamic>();
+            var cardStarterBanList = new List<dynamic>();
+            var cardDuelistBanList = new List<dynamic>();
 
             dataScrambler.LoadDataFromSlus();
             dataScrambler.LoadDataFromWaMrg();
 
-            var allMonsters = Static.Cards
-                .Where(x => dataScrambler.IsMonsterCard(x.Type))
+            var starterCards = Static.Cards
                 .Select(y => new
                 {
                     y.Id,
@@ -84,13 +84,35 @@ namespace FMScrambler
                 })
                 .ToList();
 
-            foreach (var card in allMonsters)
+            var duelistCards = Static.Cards
+                .Where(x => x.Type != (int)Static.Type.Ritual)
+                .Select(y => new
+                {
+                    y.Id,
+                    y.Name,
+                    y.Description,
+                    y.Attack,
+                    y.Defense,
+                    y.BigImage
+                })
+                .ToList();
+
+            foreach (var card in starterCards)
             {
-                cardBanList.Add(new { card.Id, card.Name, Description = card.Description + $"\n\nATK: {card.Attack} \nDEF: {card.Defense}", Image = card.BigImage.CreateUnsafeBitmap() });
+                cardStarterBanList.Add(new { card.Id, card.Name, Description = card.Description + $"\n\nATK: {card.Attack} \nDEF: {card.Defense}", Image = card.BigImage.CreateUnsafeBitmap() });
             }
 
-            listb_staterdeckcardsFilters.ItemsSource = cardBanList;
+            foreach (var card in duelistCards)
+            {
+                cardDuelistBanList.Add(new { card.Id, card.Name, Description = card.Description + $"\n\nATK: {card.Attack} \nDEF: {card.Defense}", Image = card.BigImage.CreateUnsafeBitmap() });
+            }
+
+            listb_staterdeckcardsFilters.ItemsSource = cardStarterBanList;
             listb_staterdeckcardsFilters.IsEnabled = true;
+
+            listb_duelistsdeckcardsFilters.ItemsSource = cardDuelistBanList;
+            listb_duelistsdeckcardsFilters.IsEnabled = true;
+
             tab_cardsFilters.IsEnabled = true;
         }
 
@@ -177,7 +199,7 @@ namespace FMScrambler
                     MessageBoxButton.OK, MessageBoxImage.Information);
                 Process.Start(Directory.GetParent(Static.IsoPath).FullName);
 
-                //Allow scrambling again
+                // Allow scrambling again
                 btn_perform.IsEnabled = true;
                 btn_patchiso.IsEnabled = false;
             }
@@ -347,7 +369,7 @@ namespace FMScrambler
                 }
             }
 
-            //There should be 85 entries otherwise file got corrupted, misread or user manually provided a bad file
+            // There should be 85 entries otherwise file got corrupted, misread or user manually provided a bad file
             if (Static.Dict.Values.Count != 85)
             {
                 MessageBox.Show("Provided CharacterTable.txt is incorrect or incomplete!", "Error reading CharacterTable.txt", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -413,9 +435,13 @@ namespace FMScrambler
                     {
                         var handleBigImage = bigImage.GetHbitmap();
 
-                        img_bannedCardId.Source = Imaging.CreateBitmapSourceFromHBitmap(handleBigImage, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-                        img_bannedCardId.ToolTip = TypeDescriptor.GetProperties(stackPanelObject.DataContext)["Description"].GetValue(stackPanelObject.DataContext);
-                        img_bannedCardId.Visibility = Visibility.Visible;
+                        img_bannedStarterCardId.Source = Imaging.CreateBitmapSourceFromHBitmap(handleBigImage, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+                        img_bannedStarterCardId.ToolTip = TypeDescriptor.GetProperties(stackPanelObject.DataContext)["Description"].GetValue(stackPanelObject.DataContext);
+                        img_bannedStarterCardId.Visibility = Visibility.Visible;
+
+                        img_bannedDuelistCardId.Source = Imaging.CreateBitmapSourceFromHBitmap(handleBigImage, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+                        img_bannedDuelistCardId.ToolTip = TypeDescriptor.GetProperties(stackPanelObject.DataContext)["Description"].GetValue(stackPanelObject.DataContext);
+                        img_bannedDuelistCardId.Visibility = Visibility.Visible;
                     }
                     catch (Exception ex)
                     {
@@ -436,7 +462,8 @@ namespace FMScrambler
 
                 if (tabItemObject != null)
                 {
-                    if (tabItemObject.Header.Equals("Card Filter") == true)
+                    if (tabItemObject.Header.ToString().Contains("Deck") == true
+                        || tabItemObject.Header.ToString().Contains("Card") == true)
                     {
                         if (Static.FilterStarterDeckCards.BannedCards.Count > 0)
                         {
@@ -445,13 +472,25 @@ namespace FMScrambler
                                 listb_staterdeckcardsFilters.SelectedItems.Add(Static.FilterStarterDeckCards.BannedCards[i]);
                             }
                         }
+
+                        if (Static.FilterDuelistDeckCards.BannedCards.Count > 0)
+                        {
+                            for (int i = 0; i < Static.FilterDuelistDeckCards.BannedCards.Count; i++)
+                            {
+                                listb_duelistsdeckcardsFilters.SelectedItems.Add(Static.FilterDuelistDeckCards.BannedCards[i]);
+                            }
+                        }
                     }
                     else
                     {
                         // Card filter image clear
-                        img_bannedCardId.ToolTip = string.Empty;
-                        img_bannedCardId.Source = null;
-                        img_bannedCardId.Visibility = Visibility.Hidden;
+                        img_bannedStarterCardId.ToolTip = string.Empty;
+                        img_bannedStarterCardId.Source = null;
+                        img_bannedStarterCardId.Visibility = Visibility.Hidden;
+
+                        img_bannedDuelistCardId.ToolTip = string.Empty;
+                        img_bannedDuelistCardId.Source = null;
+                        img_bannedDuelistCardId.Visibility = Visibility.Hidden;
 
                         if (listb_staterdeckcardsFilters.SelectedItems.Count > 0)
                         {
@@ -463,6 +502,18 @@ namespace FMScrambler
                             }
 
                             listb_staterdeckcardsFilters.SelectedItems.Clear();
+                        }
+
+                        if (listb_duelistsdeckcardsFilters.SelectedItems.Count > 0)
+                        {
+                            Static.FilterDuelistDeckCards.BannedCards.Clear();
+
+                            for (int i = 0; i < listb_duelistsdeckcardsFilters.SelectedItems.Count; i++)
+                            {
+                                Static.FilterDuelistDeckCards.BannedCards.Add(listb_duelistsdeckcardsFilters.SelectedItems[i]);
+                            }
+
+                            listb_duelistsdeckcardsFilters.SelectedItems.Clear();
                         }
                     }
                 }

@@ -63,7 +63,7 @@
                             <CheckBox x:Name="chk_randomdrops" Content="Randomize Card Drops" HorizontalAlignment="Left" Margin="210,23,0,0" VerticalAlignment="Top" IsChecked="{Binding CheckboxRandomCardDrops, Mode=TwoWay}"/>
                             <CheckBox x:Name="chk_randomdecks" Content="Randomize Duelist Decks" HorizontalAlignment="Left" Margin="210,46,0,0" VerticalAlignment="Top" IsChecked="{Binding CheckboxRandomDecks, Mode=TwoWay}"/>
                             <CheckBox x:Name="chk_atkdefenabled" Content="Enable ATK/DEF Scramble" HorizontalAlignment="Left" Margin="0,68,0,0" VerticalAlignment="Top" IsChecked="{Binding CheckboxAttackDefenseRandomizing, Mode=TwoWay}" Width="210" FontFamily="Segoe UI"/>
-                            <CheckBox x:Name="ch_glitch" Content="&quot;000&quot; Glitch Fusions" Margin="0,91,0,0" IsChecked="{Binding CheckboxGlitchCards, Mode=TwoWay}" FontFamily="Segoe UI" VerticalAlignment="Top" ToolTip="Allow glitchy fusions with an ID over 722." RenderTransformOrigin="0.244,-2.056" HorizontalAlignment="Left" Width="195"/>
+                            <CheckBox x:Name="ch_glitch" Content="&quot;000&quot; Glitch Fusions" Margin="0,91,0,0" IsChecked="{Binding CheckboxGlitchCards, Mode=TwoWay}" FontFamily="Segoe UI" VerticalAlignment="Top" ToolTip="Allow glitchy fusions with an ID over 722." RenderTransformOrigin="0.244,-2.056" HorizontalAlignment="Left" Width="195" IsEnabled="False"/>
                             <CheckBox x:Name="chk_randomequips" Content="Randomize Equips" HorizontalAlignment="Left" Margin="210,69,0,0" VerticalAlignment="Top" IsChecked="{Binding CheckboxRandomEquips, Mode=TwoWay}"/>
                             <CheckBox x:Name="chk_randomfusions" Content="Randomize Fusions" HorizontalAlignment="Left" Margin="210,92,0,0" VerticalAlignment="Top" IsChecked="{Binding CheckboxRandomFusions, FallbackValue=True, Mode=TwoWay}"/>
                             <CheckBox x:Name="chk_randomstarchips" Content="Randomize Starchip Costs" HorizontalAlignment="Left" Margin="210,115,0,0" VerticalAlignment="Top" IsChecked="{Binding CheckboxRandomStarchips, Mode=TwoWay}"/>
@@ -144,18 +144,89 @@
                     </GroupBox>
                 </Grid>
             </TabItem>
-            <TabItem Header="Credits / Help" Height="39" VerticalAlignment="Top" Margin="46,-4,-46,0">
+            <TabItem x:Name="tab_cardsFilters" Header="Card Filter" Height="39" VerticalAlignment="Top" Margin="47,-4,-47,0" IsEnabled="False">
                 <TabItem.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="White" Offset="0"/>
                         <GradientStop Color="#FFE5E5E5" Offset="1"/>
                     </LinearGradientBrush>
                 </TabItem.Background>
-                <Grid Background="#FFE5E5E5">
-                    <TextBlock x:Name="txtb_credits1" HorizontalAlignment="Left" Height="256" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="738" TextAlignment="Center" LineHeight="10" FontSize="11"><Run Text="This tool was created by "/><Run FontWeight="Bold" Text="duke1102 "/><Run Text="and updated by "/><Run FontWeight="Bold" Text="Cretino "/><Run Text="for the Playstation game &quot;Yu-Gi-Oh! Forbidden Memories&quot; (NTSC, USA version)."/><LineBreak/><Run Text="This software is licensed under an "/><Run FontWeight="Bold" Text="MIT license"/><Run Text=", you can find a copy in the folder of the tool under "/><Run FontWeight="Bold" Text="&quot;LICENSE&quot;"/><Run Text="."/><LineBreak/><Run/><LineBreak/><Run FontSize="10" Text="Credits to "/><Run FontWeight="Bold" FontSize="10" Text="Neto Rpg "/><Run FontSize="10" Text="and "/><Run FontWeight="Bold" FontSize="10" Text="RyuuzakiL5"/><Run FontSize="10" Text=" for their "/><Run FontWeight="Bold" FontSize="10" Text="FM Tool ALPHA"/><Run FontSize="10" Text=", "/><LineBreak/><Run FontSize="10" Text="which helped me out a whole lot with reading/manipulating the game files."/><LineBreak/><Run FontSize="10" Text="Show them some love!"/><LineBreak/><Run FontSize="10"/><LineBreak/><Run FontSize="10" Text="You can find precompiled binaries and the source code of this tool at Github."/><LineBreak/><Run FontWeight="Bold" FontStyle="Italic" FontSize="10" Text="http://github.com/duke1102/fmscrambler"/><LineBreak/><Run FontSize="10"/><LineBreak/><Run FontSize="10" Text="Feel free to comment, leave feedback, bug reports, fork or contribute!"/><LineBreak/><Run FontSize="10"/><LineBreak/><Run FontSize="10"/><LineBreak/><Run FontSize="10" Text="Special thanks to the Yu-Gi-Oh! Forbidden Memories Speedrun Community, especially the Discord Server. "/><Run FontWeight="Bold" FontSize="10" Text="You guys are awesome!"/><LineBreak/><Run FontWeight="Bold" FontSize="10"/><LineBreak/><Run FontWeight="Bold" FontSize="10" Text="Thanks for feedback/playtesting goes to Totozigemm, GenericMadScientist, Xer_91 and gfc_marcus."/></TextBlock>
+                <Grid>
+                    <TabControl>
+                        <TabItem Header="Starter Deck" Margin="1,-1,-1,1">
+                            <Grid Background="#FFE5E5E5">
+                                <GroupBox Header="Banned Cards Starter Deck Filter" Margin="5,5,416,98">
+                                    <ListBox x:Name="listb_staterdeckcardsFilters" IsEnabled="False" SelectionMode="Multiple">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel MouseEnter="stackp_cardsFiltersImage_MouseEnter">
+                                                    <CheckBox Content="{Binding Name}" ToolTip="{Binding Description}" IsChecked="{Binding IsSelected, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </GroupBox>
+                                <GroupBox Header="Card image" Margin="340,5,287,98">
+                                    <Image x:Name="img_bannedStarterCardId" Width="102" VerticalAlignment="Top" Height="96" Visibility="Hidden"/>
+                                </GroupBox>
+                                <GroupBox Header="ATK/DEF Starter Deck Filter" HorizontalAlignment="Left" Height="137" Margin="468,5,0,0" VerticalAlignment="Top" Width="282" Controls:HeaderedControlHelper.HeaderFontSize="13" Controls:HeaderedControlHelper.HeaderFontWeight="Medium" FontWeight="Bold" IsEnabled="{Binding CheckboxStarterDeckAtkDefFilter}">
+                                    <Grid UseLayoutRounding="False" Margin="0" >
+                                        <Label Content="Min. ATK" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,1,0,0" Width="120" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                                        <Label Content="Max. ATK" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,1,0,0" Width="120" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                                        <Label Content="Min. DEF" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,50,0,0" Width="120" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                                        <Label Content="Max. DEF" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,50,0,0" Width="120" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                                        <Controls:NumericUpDown x:Name="txt_minAtkStarterDeck" HorizontalAlignment="Left" Margin="5,20,0,0" VerticalAlignment="Top" Width="120" Maximum="5500" Minimum="0" NumericInputMode="Numbers" SnapToMultipleOfInterval="True"/>
+                                        <Controls:NumericUpDown x:Name="txt_maxAtkStarterDeck" HorizontalAlignment="Left" Margin="150,20,0,0" VerticalAlignment="Top" Width="120" Maximum="5500" Minimum="1400" NumericInputMode="Numbers" SnapToMultipleOfInterval="True"/>
+                                        <Controls:NumericUpDown x:Name="txt_minDefStarterDeck" HorizontalAlignment="Left" Margin="5,68,0,0" VerticalAlignment="Top" Width="120" Maximum="5500" Minimum="0" NumericInputMode="Numbers" SnapToMultipleOfInterval="True"/>
+                                        <Controls:NumericUpDown x:Name="txt_maxDefStarterDeck" HorizontalAlignment="Left" Margin="150,68,0,0" VerticalAlignment="Top" Width="120" Maximum="5500" Minimum="1400" NumericInputMode="Numbers" SnapToMultipleOfInterval="True"/>
+                                    </Grid>
+                                </GroupBox>
+                                <GroupBox Header="Filter Options" HorizontalAlignment="Left" Controls:HeaderedControlHelper.HeaderFontSize="13" Controls:HeaderedControlHelper.HeaderFontWeight="Medium" FontWeight="Bold" Margin="5,147,0,36" Width="331">
+                                    <Grid>
+                                        <CheckBox x:Name="chk_starterdeckatkdef" Content="Enable Starter Deck ATK/DEF Filter" VerticalAlignment="Top" IsChecked="{Binding CheckboxStarterDeckAtkDefFilter, Mode=TwoWay}" Grid.ColumnSpan="2"/>
+                                    </Grid>
+                                </GroupBox>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Duelists Deck" Margin="0,-1,-4,1" HorizontalAlignment="Right" Width="170">
+                            <Grid Background="#FFE5E5E5">
+                                <GroupBox Header="Banned Cards Duelists Deck Filter" Margin="5,5,416,98">
+                                    <ListBox x:Name="listb_duelistsdeckcardsFilters" IsEnabled="False" SelectionMode="Multiple">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel MouseEnter="stackp_cardsFiltersImage_MouseEnter">
+                                                    <CheckBox Content="{Binding Name}" ToolTip="{Binding Description}" IsChecked="{Binding IsSelected, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </GroupBox>
+                                <GroupBox Header="Card image" Margin="340,5,287,98">
+                                    <Image x:Name="img_bannedDuelistCardId" Width="102" VerticalAlignment="Top" Height="96" Visibility="Hidden"/>
+                                </GroupBox>
+                                <GroupBox Header="ATK/DEF Duelist Deck Filter" HorizontalAlignment="Left" Height="137" Margin="468,5,0,0" VerticalAlignment="Top" Width="282" Controls:HeaderedControlHelper.HeaderFontSize="13" Controls:HeaderedControlHelper.HeaderFontWeight="Medium" FontWeight="Bold" IsEnabled="{Binding CheckboxDuelistDeckAtkDefFilter}">
+                                    <Grid UseLayoutRounding="False" Margin="0" >
+                                        <Label Content="Min. ATK" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,1,0,0" Width="120" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                                        <Label Content="Max. ATK" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,1,0,0" Width="120" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                                        <Label Content="Min. DEF" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,50,0,0" Width="120" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                                        <Label Content="Max. DEF" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,50,0,0" Width="120" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                                        <Controls:NumericUpDown x:Name="txt_minAtkDuelistDeck" HorizontalAlignment="Left" Margin="5,20,0,0" VerticalAlignment="Top" Width="120" Maximum="5500" Minimum="0" NumericInputMode="Numbers" SnapToMultipleOfInterval="True"/>
+                                        <Controls:NumericUpDown x:Name="txt_maxAtkDuelistDeck" HorizontalAlignment="Left" Margin="150,20,0,0" VerticalAlignment="Top" Width="120" Maximum="5500" Minimum="1400" NumericInputMode="Numbers" SnapToMultipleOfInterval="True"/>
+                                        <Controls:NumericUpDown x:Name="txt_minDefDuelistDeck" HorizontalAlignment="Left" Margin="5,68,0,0" VerticalAlignment="Top" Width="120" Maximum="5500" Minimum="0" NumericInputMode="Numbers" SnapToMultipleOfInterval="True"/>
+                                        <Controls:NumericUpDown x:Name="txt_maxDefDuelistDeck" HorizontalAlignment="Left" Margin="150,68,0,0" VerticalAlignment="Top" Width="120" Maximum="5500" Minimum="1400" NumericInputMode="Numbers" SnapToMultipleOfInterval="True"/>
+                                    </Grid>
+                                </GroupBox>
+                                <GroupBox Header="Filter Options" HorizontalAlignment="Left" Controls:HeaderedControlHelper.HeaderFontSize="13" Controls:HeaderedControlHelper.HeaderFontWeight="Medium" FontWeight="Bold" Margin="5,147,0,36" Width="331">
+                                    <Grid>
+                                        <CheckBox x:Name="chk_duelistdeckatkdef" Content="Enable Duelists Deck ATK/DEF Filter" VerticalAlignment="Top" IsChecked="{Binding CheckboxDuelistDeckAtkDefFilter, Mode=TwoWay}" Grid.ColumnSpan="2"/>
+                                    </Grid>
+                                </GroupBox>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
                 </Grid>
             </TabItem>
-            <TabItem x:Name="tab_cardsFilters" Header="Card Filter" Height="39" VerticalAlignment="Top" Margin="50,-4,-50,0" IsEnabled="False">
+            <TabItem Header="About" Height="39" VerticalAlignment="Top" Margin="52,-4,-52,0">
                 <TabItem.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="White" Offset="0"/>
@@ -163,54 +234,12 @@
                     </LinearGradientBrush>
                 </TabItem.Background>
                 <Grid Background="#FFE5E5E5">
-                    <GroupBox Header="Banned Cards Starter Deck Filter" Width="320" Margin="5,5,433,98">
-                        <ListBox x:Name="listb_staterdeckcardsFilters" IsEnabled="False" SelectionMode="Multiple">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel MouseEnter="stackp_cardsFiltersImage_MouseEnter">
-                                        <CheckBox Content="{Binding Name}" ToolTip="{Binding Description}" IsChecked="{Binding IsSelected, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" />
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </GroupBox>
-                    <GroupBox Header="Card image" Margin="330,5,297,5">
-                        <Image x:Name="img_bannedCardId" Width="102" VerticalAlignment="Top" Height="96" Visibility="Hidden"/>
-                    </GroupBox>
-                    <GroupBox Header="ATK/DEF Starter Deck Filter" HorizontalAlignment="Left" Height="137" Margin="466,5,0,0" VerticalAlignment="Top" Width="282" Controls:HeaderedControlHelper.HeaderFontSize="13" Controls:HeaderedControlHelper.HeaderFontWeight="Medium" FontWeight="Bold" IsEnabled="{Binding CheckboxStarterDeckAtkDefFilter}">
-                        <Grid UseLayoutRounding="False" Margin="0" >
-                            <Label Content="Min. ATK" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,1,0,0" Width="120" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                            <Label Content="Max. ATK" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,1,0,0" Width="120" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                            <Label Content="Min. DEF" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,50,0,0" Width="120" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                            <Label Content="Max. DEF" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,50,0,0" Width="120" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                            <Controls:NumericUpDown x:Name="txt_minAtkStarterDeck" HorizontalAlignment="Left" Margin="5,20,0,0" VerticalAlignment="Top" Width="120" Maximum="5500" Minimum="0" NumericInputMode="Numbers" SnapToMultipleOfInterval="True"/>
-                            <Controls:NumericUpDown x:Name="txt_maxAtkStarterDeck" HorizontalAlignment="Left" Margin="150,20,0,0" VerticalAlignment="Top" Width="120" Maximum="5500" Minimum="1400" NumericInputMode="Numbers" SnapToMultipleOfInterval="True"/>
-                            <Controls:NumericUpDown x:Name="txt_minDefStarterDeck" HorizontalAlignment="Left" Margin="5,68,0,0" VerticalAlignment="Top" Width="120" Maximum="5500" Minimum="0" NumericInputMode="Numbers" SnapToMultipleOfInterval="True"/>
-                            <Controls:NumericUpDown x:Name="txt_maxDefStarterDeck" HorizontalAlignment="Left" Margin="150,68,0,0" VerticalAlignment="Top" Width="120" Maximum="5500" Minimum="1400" NumericInputMode="Numbers" SnapToMultipleOfInterval="True"/>
-                        </Grid>
-                    </GroupBox>
-                    <GroupBox Header="ATK/DEF Duelist Deck Filter" HorizontalAlignment="Left" Height="132" Margin="466,148,0,0" VerticalAlignment="Top" Width="282" Controls:HeaderedControlHelper.HeaderFontSize="13" Controls:HeaderedControlHelper.HeaderFontWeight="Medium" FontWeight="Bold" IsEnabled="{Binding CheckboxDuelistDeckAtkDefFilter}">
-                        <Grid UseLayoutRounding="False" Margin="0" >
-                            <Label Content="Min. ATK" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,1,0,0" Width="120" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                            <Label Content="Max. ATK" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,1,0,0" Width="120" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                            <Label Content="Min. DEF" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,50,0,0" Width="120" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                            <Label Content="Max. DEF" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,50,0,0" Width="120" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                            <Controls:NumericUpDown x:Name="txt_minAtkDuelistDeck" HorizontalAlignment="Left" Margin="5,20,0,0" VerticalAlignment="Top" Width="120" Maximum="5500" Minimum="0" NumericInputMode="Numbers" SnapToMultipleOfInterval="True"/>
-                            <Controls:NumericUpDown x:Name="txt_maxAtkDuelistDeck" HorizontalAlignment="Left" Margin="150,20,0,0" VerticalAlignment="Top" Width="120" Maximum="5500" Minimum="1400" NumericInputMode="Numbers" SnapToMultipleOfInterval="True"/>
-                            <Controls:NumericUpDown x:Name="txt_minDefDuelistDeck" HorizontalAlignment="Left" Margin="5,68,0,0" VerticalAlignment="Top" Width="120" Maximum="5500" Minimum="0" NumericInputMode="Numbers" SnapToMultipleOfInterval="True"/>
-                            <Controls:NumericUpDown x:Name="txt_maxDefDuelistDeck" HorizontalAlignment="Left" Margin="150,68,0,0" VerticalAlignment="Top" Width="120" Maximum="5500" Minimum="1400" NumericInputMode="Numbers" SnapToMultipleOfInterval="True"/>
-                        </Grid>
-                    </GroupBox>
-                    <GroupBox Header="Filter Options" HorizontalAlignment="Left" Controls:HeaderedControlHelper.HeaderFontSize="13" Controls:HeaderedControlHelper.HeaderFontWeight="Medium" FontWeight="Bold" Margin="5,192,0,5" Width="320">
-                        <Grid Margin="0,0,-2,5">
-                            <CheckBox x:Name="chk_starterdeckatkdef" Content="Enable Starter Deck ATK/DEF Filter" VerticalAlignment="Top" IsChecked="{Binding CheckboxStarterDeckAtkDefFilter, Mode=TwoWay}" Grid.ColumnSpan="2"/>
-                            <CheckBox x:Name="chk_duelistdeckatkdef" Content="Enable Duelist Deck ATK/DEF Filter" VerticalAlignment="Top" IsChecked="{Binding CheckboxDuelistDeckAtkDefFilter, Mode=TwoWay}" Margin="0,23,0,0" Grid.ColumnSpan="2"/>
-                        </Grid>
-                    </GroupBox>
+                    <TextBlock x:Name="txtb_credits1" HorizontalAlignment="Left" Height="256" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="738" TextAlignment="Center" LineHeight="10" FontSize="11"><Run Text="This tool was created by "/><Run FontWeight="Bold" Text="duke1102 "/><Run Text="and updated by "/><Run FontWeight="Bold" Text="Cretino "/><Run Text="for the Playstation game &quot;Yu-Gi-Oh! Forbidden Memories&quot; (NTSC, USA version)."/><LineBreak/><Run Text="This software is licensed under an "/><Run FontWeight="Bold" Text="MIT license"/><Run Text=", you can find a copy in the folder of the tool under "/><Run FontWeight="Bold" Text="&quot;LICENSE&quot;"/><Run Text="."/><LineBreak/><Run/><LineBreak/><Run FontSize="10" Text="Credits to "/><Run FontWeight="Bold" FontSize="10" Text="Neto Rpg "/><Run FontSize="10" Text="and "/><Run FontWeight="Bold" FontSize="10" Text="RyuuzakiL5"/><Run FontSize="10" Text=" for their "/><Run FontWeight="Bold" FontSize="10" Text="FM Tool ALPHA"/><Run FontSize="10" Text=", "/><LineBreak/><Run FontSize="10" Text="which helped me out a whole lot with reading/manipulating the game files."/><LineBreak/><Run FontSize="10" Text="Show them some love!"/><LineBreak/><Run FontSize="10"/><LineBreak/><Run FontSize="10" Text="You can find precompiled binaries and the source code of this tool at Github."/><LineBreak/><Run FontWeight="Bold" FontStyle="Italic" FontSize="10" Text="http://github.com/duke1102/fmscrambler (Arquived)"/><LineBreak></LineBreak><Run FontWeight="Bold" FontStyle="Italic" FontSize="10" Text="https://github.com/Cretino/fmscrambler"/><LineBreak/><Run FontSize="10"/><LineBreak/><Run FontSize="10" Text="Feel free to comment, leave feedback, bug reports, fork or contribute!"/><LineBreak/><Run FontSize="10"/><LineBreak/><Run FontSize="10"/><LineBreak/><Run FontSize="10" Text="Special thanks to the Yu-Gi-Oh! Forbidden Memories Speedrun Community, especially the Discord Server. "/><Run FontWeight="Bold" FontSize="10" Text="You guys are awesome!"/><LineBreak/><Run FontWeight="Bold" FontSize="10"/><LineBreak/><Run FontWeight="Bold" FontSize="10" Text="Thanks for feedback/playtesting goes to Totozigemm, GenericMadScientist, Xer_91 and gfc_marcus."/></TextBlock>
                 </Grid>
             </TabItem>
         </TabControl>
-        <Label x:Name="lbl_copyleft_Copy" Content="http://github.com/duke1102/fmscrambler" FontSize="11" HorizontalContentAlignment="Center" Margin="13,351,545,15" VerticalContentAlignment="Center" Height="17" Padding="0" Width="232"/>
+        <Label x:Name="lbl_copyleft_Copy" Content="Original repo (Arquived): http://github.com/duke1102/fmscrambler" FontSize="11" HorizontalContentAlignment="Center" Margin="13,351,435,13" VerticalContentAlignment="Center" Height="17" Padding="0"/>
+        <Label x:Name="lbl_copyright_Copy" Content="Fork: https://github.com/Cretino/fmscrambler" FontSize="11" HorizontalContentAlignment="Center" Margin="444,351,114,13" VerticalContentAlignment="Center" Height="17" Padding="0" Width="232"/>
         <Canvas x:Name="pgr_back" Background="#C1000000" Visibility="Hidden">
             <Controls:ProgressRing x:Name="pgr1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="211" Width="231" OpacityMask="Black" Canvas.Left="209" Canvas.Top="103">
                 <Controls:ProgressRing.Effect>
