@@ -707,6 +707,26 @@ namespace FMLib.Randomizer
         /// <param name="maxDropRate"></param>
         public void RandomizeCardDrops(int minDropRate = 1, int maxDropRate = 1)
         {
+            if (minDropRate <= 0)
+            {
+                minDropRate = 1;
+            }
+
+            if (maxDropRate <= 0)
+            {
+                maxDropRate = 1;
+            }
+
+            if (minDropRate > Static.MaxRateDrop)
+            {
+                minDropRate = Static.MaxRateDrop;
+            }
+
+            if (maxDropRate > Static.MaxRateDrop)
+            {
+                maxDropRate = Static.MaxRateDrop;
+            }
+
             if (Static.RandomCardDrops)
             {
                 var allCardsId = Static.Cards
@@ -854,8 +874,10 @@ namespace FMLib.Randomizer
                                 && x.Attack >= Static.FilterDuelistDeckCards.MinimumAttack
                                 && x.Attack <= Static.FilterDuelistDeckCards.MaximumAttack
                                 && x.Defense >= Static.FilterDuelistDeckCards.MinimumDefense
-                                && x.Defense <= Static.FilterDuelistDeckCards.MaximumDefense)
-                                || Static.FilterDuelistDeckCards.EnableAtkDef == false))
+                                && x.Defense <= Static.FilterDuelistDeckCards.MaximumDefense
+                                && IsMonsterCard(x.Type) == true)
+                                || Static.FilterDuelistDeckCards.EnableAtkDef == false
+                                || IsMonsterCard(x.Type) == false))
                         .Select(y => y.Id)
                         .OrderBy(z => _random.Next())
                         .ToList();
@@ -886,16 +908,114 @@ namespace FMLib.Randomizer
         {
             if (Static.RandomStarterDecks)
             {
+                var allBannedCards = Static.FilterStarterDeckCards.BannedCards
+                    .Select(x => TypeDescriptor.GetProperties(x)["Id"].GetValue(x) as int? ?? 0).ToList();
+
                 // Static.StarterDeck[4] = Magics (Dark Hole and Raigeki)
                 // Static.StarterDeck[5] = Magics (Forest, Wasteland, Mountain, Sogen, Umi and Yami)
                 // Static.StarterDeck[6] = Magics (Equips)
-                // We only randomize monsters.
+
+                // Randomize equips. (Existem no máximo 34 equipamentos.)
+                var randomSize = GetRandomNumber(20, 34);
+                var minimumRandom = 1;
+                var maximumRandom = GetMaximum(randomSize);
+                var randomNumbersArray = GenerateRandomNumbers(randomSize, minimumRandom, maximumRandom, Static.MaxRateDrop);
+
+                // Limpamos a lista antiga.
+                Array.Clear(Static.StarterDeck[6].Cards, 0, Static.MaxCards);
+
+                // Buscamos todos os equipamentos existentes.
+                var allEquipsId = Static.Cards
+                    .Where(x => x.Type == (int)Static.Type.Equip)
+                    .Select(y => y.Id)
+                    .OrderBy(z => _random.Next())
+                    .ToList();
+
+                allEquipsId = allEquipsId
+                    .Where(x => allBannedCards.Contains(x) == false)
+                    .ToList();
+
+                foreach (var randomNumber in randomNumbersArray)
+                {
+                    int randomIndex = GetRandomNumber(0, allEquipsId.Count());
+
+                    Static.StarterDeck[6].Cards[allEquipsId.ElementAt(randomIndex) - 1] = randomNumber;
+
+                    allEquipsId.RemoveAt(randomIndex);
+                }
+
+                // Randomize magics and rituals. (Existem no máximo 57 mágicas e rituais.)
+                randomSize = GetRandomNumber(20, 57);
+                minimumRandom = 1;
+                maximumRandom = GetMaximum(randomSize);
+                randomNumbersArray = GenerateRandomNumbers(randomSize, minimumRandom, maximumRandom, Static.MaxRateDrop);
+
+                // Aumentamos o número de cartas mágicas obtidas.
+                Static.StarterDeck[5].Dropped++;
+
+                // Limpamos a lista antiga.
+                Array.Clear(Static.StarterDeck[5].Cards, 0, Static.MaxCards);
+
+                // Buscamos todas as mágicas e rituais existentes.
+                var allMagicsId = Static.Cards
+                    .Where(x => x.Type == (int)Static.Type.Magic || x.Type == (int)Static.Type.Ritual)
+                    .Select(y => y.Id)
+                    .OrderBy(z => _random.Next())
+                    .ToList();
+
+                allMagicsId = allMagicsId
+                    .Where(x => allBannedCards.Contains(x) == false)
+                    .ToList();
+
+                foreach (var randomNumber in randomNumbersArray)
+                {
+                    int randomIndex = GetRandomNumber(0, allMagicsId.Count());
+
+                    Static.StarterDeck[5].Cards[allMagicsId.ElementAt(randomIndex) - 1] = randomNumber;
+
+                    allMagicsId.RemoveAt(randomIndex);
+                }
+
+                // Randomize traps. (Existem no máximo 10 traps.)
+                randomSize = GetRandomNumber(1, 10);
+                minimumRandom = 1;
+                maximumRandom = GetMaximum(randomSize);
+                randomNumbersArray = GenerateRandomNumbers(randomSize, minimumRandom, maximumRandom, Static.MaxRateDrop);
+
+                // Limpamos a lista antiga.
+                Array.Clear(Static.StarterDeck[4].Cards, 0, Static.MaxCards);
+
+                // Buscamos todas as mágicas e rituais existentes.
+                var allTrapsId = Static.Cards
+                    .Where(x => x.Type == (int)Static.Type.Trap)
+                    .Select(y => y.Id)
+                    .OrderBy(z => _random.Next())
+                    .ToList();
+
+                allTrapsId = allTrapsId
+                    .Where(x => allBannedCards.Contains(x) == false)
+                    .ToList();
+
+                foreach (var randomNumber in randomNumbersArray)
+                {
+                    int randomIndex = GetRandomNumber(0, allTrapsId.Count());
+
+                    Static.StarterDeck[4].Cards[allTrapsId.ElementAt(randomIndex) - 1] = randomNumber;
+
+                    allTrapsId.RemoveAt(randomIndex);
+                }
+
+                // Randomize monsters.
+                // Iremos diminuir a quantidade de monstros do primeiro 'set'
+                // para aumentar a quantidade de mágicas que podem ser obtidas.
+                Static.StarterDeck[0].Dropped--;
+
                 for (int i = 0; i < Static.MaxStarterDeck - 3; i++)
                 {
-                    var randomSize = GetRandomNumber(60, 120);
-                    var minimumRandom = 1;
-                    var maximumRandom = GetMaximum(randomSize);
-                    var randomNumbersArray = GenerateRandomNumbers(randomSize, minimumRandom, maximumRandom, Static.MaxRateDrop);
+                    randomSize = GetRandomNumber(60, 120);
+                    minimumRandom = 1;
+                    maximumRandom = GetMaximum(randomSize);
+                    randomNumbersArray = GenerateRandomNumbers(randomSize, minimumRandom, maximumRandom, Static.MaxRateDrop);
 
                     // Limpamos a lista antiga.
                     Array.Clear(Static.StarterDeck[i].Cards, 0, Static.MaxCards);
@@ -913,9 +1033,6 @@ namespace FMLib.Randomizer
                         .Select(y => y.Id)
                         .OrderBy(z => _random.Next())
                         .ToList();
-
-                    var allBannedCards = Static.FilterStarterDeckCards.BannedCards
-                        .Select(x => TypeDescriptor.GetProperties(x)["Id"].GetValue(x) as int? ?? 0).ToList();
 
                     allMonstersId = allMonstersId
                         .Where(x => allBannedCards.Contains(x) == false)
