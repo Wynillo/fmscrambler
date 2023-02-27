@@ -748,10 +748,6 @@ namespace FMLib.Randomizer
                     {
                         maxDropRate = GetMaximum(randomSize);
                     }
-                    else if (randomSize * maxDropRate > Static.MaxRateDrop)
-                    {
-                        maxDropRate = GetMaximum(randomSize);
-                    }
 
                     var randomNumbersArray = GenerateRandomNumbers(randomSize, minDropRate, maxDropRate, Static.MaxRateDrop);
 
