@@ -748,6 +748,10 @@ namespace FMLib.Randomizer
                     {
                         maxDropRate = GetMaximum(randomSize);
                     }
+                    else if (randomSize * maxDropRate > Static.MaxRateDrop)
+                    {
+                        maxDropRate = GetMaximum(randomSize);
+                    }
 
                     var randomNumbersArray = GenerateRandomNumbers(randomSize, minDropRate, maxDropRate, Static.MaxRateDrop);
 
@@ -1028,6 +1032,7 @@ namespace FMLib.Randomizer
                     // e aplicamos os filtros de ATK/DEF caso existam.
                     var allMonstersId = Static.Cards
                         .Where(x => IsMonsterCard(x.Type)
+                            && x.Id != 722 /* Magician of Black Chaos*/
                             && ((Static.FilterStarterDeckCards.EnableAtkDef == true
                                 && x.Attack >= Static.FilterStarterDeckCards.MinimumAttack
                                 && x.Attack <= Static.FilterStarterDeckCards.MaximumAttack
@@ -1927,6 +1932,16 @@ namespace FMLib.Randomizer
             RandomizeCardDrops(minDropRate, maxDropRate);
             RandomizeStarterDecks();
             RandomizeDuelistDecks();
+
+            if (starChipsDuel < 5)
+            {
+                starChipsDuel = 5;
+            }
+
+            if (starChipsDuel > 100)
+            {
+                starChipsDuel = 100;
+            }
 
             Static.StarChipsDuel = starChipsDuel;
 

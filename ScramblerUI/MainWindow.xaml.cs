@@ -72,8 +72,15 @@ namespace FMScrambler
             dataScrambler.LoadDataFromSlus();
             dataScrambler.LoadDataFromWaMrg();
 
+            txt_starChipsDuel.Value = Static.StarChipsDuel;
+            txt_starChipsDuel.IsEnabled = true;
+
+            txt_dropCount.Value = Static.DropCount - 1;
+            txt_dropCount.IsEnabled = true;
+
             var starterCards = Static.Cards
-                .Where(x => x.Type != (int)Static.Type.Ritual)
+                .Where(x => x.Type != (int)Static.Type.Ritual
+                    && x.Id != 722 /* Magician of Black Chaos */)
                 .Select(y => new
                 {
                     y.Id,
@@ -143,9 +150,9 @@ namespace FMScrambler
 
             MessageBox.Show("Done scrambling, you may proceed with patching your game ISO now." + (Static.Spoiler ? " Spoiler files were generated as well" : ""),
                 "Done scrambling.", MessageBoxButton.OK, MessageBoxImage.Information);
+
             btn_patchiso.IsEnabled = true;
             btn_perform.IsEnabled = false;
-
         }
 
         private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
@@ -189,9 +196,13 @@ namespace FMScrambler
 
         private async void DoPatch(string path)
         {
+            btn_patchiso.IsEnabled = false;
             pgr_back.Visibility = Visibility.Visible;
-            ImagePatcher patcher = new ImagePatcher(path);
+
+            var patcher = new ImagePatcher(path);
+
             Static.IsoPath = path;
+
             int patchResult = await Task.Run(() => patcher.PatchImage());
 
             if (patchResult == 1)
