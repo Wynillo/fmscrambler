@@ -867,7 +867,7 @@ namespace FMLib.Randomizer
                     Array.Clear(t1.Deck, 0, Static.MaxCards);
 
                     // Buscamos todas as cartas, exceto cartas de tipo ritual
-                    // e aplicamos o filtro de ATK/DEF caso exista.
+                    // e aplicamos o filtro de ATK/DEF caso exista e seja cartas de monstros.
                     var allCardsId = Static.Cards
                         .Where(x => x.Type != (int)Static.Type.Ritual
                             && ((Static.FilterDuelistDeckCards.EnableAtkDef == true
@@ -921,6 +921,9 @@ namespace FMLib.Randomizer
                 var maximumRandom = GetMaximum(randomSize);
                 var randomNumbersArray = GenerateRandomNumbers(randomSize, minimumRandom, maximumRandom, Static.MaxRateDrop);
 
+                // Aumentamos o número de cartas equipamentos obtidas.
+                Static.StarterDeck[6].Dropped++;
+
                 // Limpamos a lista antiga.
                 Array.Clear(Static.StarterDeck[6].Cards, 0, Static.MaxCards);
 
@@ -944,8 +947,8 @@ namespace FMLib.Randomizer
                     allEquipsId.RemoveAt(randomIndex);
                 }
 
-                // Randomize magics and rituals. (Existem no máximo 57 mágicas e rituais.)
-                randomSize = GetRandomNumber(20, 57);
+                // Randomize magics. (Existem no máximo 33 mágicas.)
+                randomSize = GetRandomNumber(20, 33);
                 minimumRandom = 1;
                 maximumRandom = GetMaximum(randomSize);
                 randomNumbersArray = GenerateRandomNumbers(randomSize, minimumRandom, maximumRandom, Static.MaxRateDrop);
@@ -956,9 +959,9 @@ namespace FMLib.Randomizer
                 // Limpamos a lista antiga.
                 Array.Clear(Static.StarterDeck[5].Cards, 0, Static.MaxCards);
 
-                // Buscamos todas as mágicas e rituais existentes.
+                // Buscamos todas as mágicas existentes.
                 var allMagicsId = Static.Cards
-                    .Where(x => x.Type == (int)Static.Type.Magic || x.Type == (int)Static.Type.Ritual)
+                    .Where(x => x.Type == (int)Static.Type.Magic)
                     .Select(y => y.Id)
                     .OrderBy(z => _random.Next())
                     .ToList();
@@ -985,7 +988,7 @@ namespace FMLib.Randomizer
                 // Limpamos a lista antiga.
                 Array.Clear(Static.StarterDeck[4].Cards, 0, Static.MaxCards);
 
-                // Buscamos todas as mágicas e rituais existentes.
+                // Buscamos todas as armadilhas existentes.
                 var allTrapsId = Static.Cards
                     .Where(x => x.Type == (int)Static.Type.Trap)
                     .Select(y => y.Id)
@@ -1006,9 +1009,10 @@ namespace FMLib.Randomizer
                 }
 
                 // Randomize monsters.
-                // Iremos diminuir a quantidade de monstros do primeiro 'set'
-                // para aumentar a quantidade de mágicas que podem ser obtidas.
+                // Iremos diminuir a quantidade de monstros do primeiro e segundo 'set' de cartas (16 -> 15)
+                // para aumentar a quantidade de mágicas e equipamentos que podem ser obtidas. (1 -> 2)
                 Static.StarterDeck[0].Dropped--;
+                Static.StarterDeck[1].Dropped--;
 
                 for (int i = 0; i < Static.MaxStarterDeck - 3; i++)
                 {

@@ -73,7 +73,7 @@ namespace FMScrambler
             dataScrambler.LoadDataFromWaMrg();
 
             var starterCards = Static.Cards
-                //.Where(x => dataScrambler.IsMonsterCard(x.Type))
+                .Where(x => x.Type != (int)Static.Type.Ritual)
                 .Select(y => new
                 {
                     y.Id,
