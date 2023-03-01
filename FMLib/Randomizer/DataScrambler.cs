@@ -622,14 +622,6 @@ namespace FMLib.Randomizer
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="size"></param>
-        /// <param name="minimum"></param>
-        /// <param name="maximum"></param>
-        /// <param name="sum"></param>
-        /// <returns></returns>
         //TODO: Need some adjustments to work properly.
         //private int[] GenerateRandomNumbers(int size, int minimum, int maximum, int sum)
         //{
