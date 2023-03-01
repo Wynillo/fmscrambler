@@ -630,46 +630,47 @@ namespace FMLib.Randomizer
         /// <param name="maximum"></param>
         /// <param name="sum"></param>
         /// <returns></returns>
-        private int[] GenerateRandomNumbers(int size, int minimum, int maximum, int sum)
-        {
-            if (size <= 1)
-            {
-                return new int[1] { sum };
-            }
+        //TODO: Need some adjustments to work properly.
+        //private int[] GenerateRandomNumbers(int size, int minimum, int maximum, int sum)
+        //{
+        //    if (size <= 1)
+        //    {
+        //        return new int[1] { sum };
+        //    }
 
-            var numberArray = new int[size];
+        //    var numberArray = new int[size];
 
-            for (int i = 0; i < numberArray.Length; i++)
-            {
-                var nextIndex = i + 1;
+        //    for (int i = 0; i < numberArray.Length; i++)
+        //    {
+        //        var nextIndex = i + 1;
 
-                if (nextIndex == numberArray.Length)
-                {
-                    numberArray[i] = sum;
-                }
-                else
-                {
-                    int rest = numberArray.Length - nextIndex;
+        //        if (nextIndex == numberArray.Length)
+        //        {
+        //            numberArray[i] = sum;
+        //        }
+        //        else
+        //        {
+        //            int rest = numberArray.Length - nextIndex;
 
-                    int restLowerBound = minimum * rest;
-                    int restUpperBound = maximum * rest;
+        //            int restLowerBound = minimum * rest;
+        //            int restUpperBound = maximum * rest;
 
-                    int myLowerBound = Math.Max(minimum, sum - restUpperBound);
-                    int myUpperBound = Math.Min(maximum, sum - restLowerBound);
+        //            int myLowerBound = Math.Max(minimum, sum - restUpperBound);
+        //            int myUpperBound = Math.Min(maximum, sum - restLowerBound);
 
-                    if (myLowerBound > myUpperBound)
-                    {
-                        (myLowerBound, myUpperBound) = (myUpperBound, myLowerBound);
-                    }
+        //            if (myLowerBound > myUpperBound)
+        //            {
+        //                (myLowerBound, myUpperBound) = (myUpperBound, myLowerBound);
+        //            }
 
-                    numberArray[i] = GetRandomNumber(myLowerBound, myUpperBound);
+        //            numberArray[i] = GetRandomNumber(myLowerBound, myUpperBound);
 
-                    sum -= numberArray[i];
-                }
-            }
+        //            sum -= numberArray[i];
+        //        }
+        //    }
 
-            return numberArray;
-        }
+        //    return numberArray;
+        //}
 
         /// <summary>
         /// 
@@ -680,7 +681,11 @@ namespace FMLib.Randomizer
         {
             var result = 0;
 
-            if (randomSize >= 20 && randomSize <= 60)
+            if (randomSize >= 11 && randomSize <= 19)
+            {
+                result = 126;
+            }
+            else if (randomSize >= 20 && randomSize <= 60)
             {
                 result = 112;
             }
@@ -695,6 +700,15 @@ namespace FMLib.Randomizer
             else if (randomSize >= 161 && randomSize <= 200)
             {
                 result = 48;
+            }
+            else
+            {
+                result = Static.MaxRateDrop / randomSize;
+
+                if (result <= 0)
+                {
+                    result = 1;
+                }
             }
 
             return result;
@@ -727,6 +741,11 @@ namespace FMLib.Randomizer
                 maxDropRate = Static.MaxRateDrop;
             }
 
+            if (minDropRate > maxDropRate)
+            {
+                (minDropRate, maxDropRate) = (maxDropRate, minDropRate);
+            }
+
             if (Static.RandomCardDrops)
             {
                 var allCardsId = Static.Cards
@@ -744,20 +763,15 @@ namespace FMLib.Randomizer
                     // BCD - POW/TEC
                     var randomSize = GetRandomNumber(20, 160);
 
-                    if (randomSize * maxDropRate < Static.MaxRateDrop)
+                    for (int i = 0; i < randomSize; i++)
                     {
-                        maxDropRate = GetMaximum(randomSize);
-                    }
+                        var rateDrop = GetRandomNumber(minDropRate, maxDropRate);
 
-                    var randomNumbersArray = GenerateRandomNumbers(randomSize, minDropRate, maxDropRate, Static.MaxRateDrop);
-
-                    foreach (var randomNumber in randomNumbersArray)
-                    {
                         if (allCardsId.Count > 0)
                         {
                             int randomIndex = GetRandomNumber(0, allCardsId.Count());
 
-                            t1.Drop.BcdPow[allCardsId.ElementAt(randomIndex) - 1] += randomNumber;
+                            t1.Drop.BcdPow[allCardsId.ElementAt(randomIndex) - 1] += rateDrop;
 
                             allCardsId.RemoveAt(randomIndex);
                         }
@@ -770,29 +784,56 @@ namespace FMLib.Randomizer
 
                             int randomIndex = GetRandomNumber(0, allCardsId.Count());
 
-                            t1.Drop.BcdPow[allCardsId.ElementAt(randomIndex) - 1] += randomNumber;
+                            t1.Drop.BcdPow[allCardsId.ElementAt(randomIndex) - 1] += rateDrop;
 
                             allCardsId.RemoveAt(randomIndex);
                         }
                     }
+
+                    //if (randomSize * maxDropRate < Static.MaxRateDrop)
+                    //{
+                    //    maxDropRate = GetMaximum(randomSize);
+                    //}
+
+                    //var randomNumbersArray = GenerateRandomNumbers(randomSize, minDropRate, maxDropRate, Static.MaxRateDrop);
+
+                    //foreach (var randomNumber in randomNumbersArray)
+                    //{
+                    //    if (allCardsId.Count > 0)
+                    //    {
+                    //        int randomIndex = GetRandomNumber(0, allCardsId.Count());
+
+                    //        t1.Drop.BcdPow[allCardsId.ElementAt(randomIndex) - 1] += randomNumber;
+
+                    //        allCardsId.RemoveAt(randomIndex);
+                    //    }
+                    //    else
+                    //    {
+                    //        allCardsId = Static.Cards
+                    //            .Select(y => y.Id)
+                    //            .OrderBy(z => _random.Next())
+                    //            .ToList();
+
+                    //        int randomIndex = GetRandomNumber(0, allCardsId.Count());
+
+                    //        t1.Drop.BcdPow[allCardsId.ElementAt(randomIndex) - 1] += randomNumber;
+
+                    //        allCardsId.RemoveAt(randomIndex);
+                    //    }
+                    //}
 
                     // SA - POW
                     randomSize = GetRandomNumber(20, 160);
 
-                    if (randomSize * maxDropRate < Static.MaxRateDrop)
+                    for (int i = 0; i < randomSize; i++)
                     {
-                        maxDropRate = GetMaximum(randomSize);
-                    }
+                        var rateDrop = GetRandomNumber(minDropRate, maxDropRate);
 
-                    randomNumbersArray = GenerateRandomNumbers(randomSize, minDropRate, maxDropRate, Static.MaxRateDrop);
-
-                    foreach (var randomNumber in randomNumbersArray)
-                    {
                         if (allCardsId.Count > 0)
                         {
                             int randomIndex = GetRandomNumber(0, allCardsId.Count());
 
-                            t1.Drop.SaPow[allCardsId.ElementAt(randomIndex) - 1] += randomNumber;
+                            t1.Drop.SaPow[allCardsId.ElementAt(randomIndex) - 1] += rateDrop;
 
                             allCardsId.RemoveAt(randomIndex);
                         }
@@ -805,29 +846,56 @@ namespace FMLib.Randomizer
 
                             int randomIndex = GetRandomNumber(0, allCardsId.Count());
 
-                            t1.Drop.SaPow[allCardsId.ElementAt(randomIndex) - 1] += randomNumber;
+                            t1.Drop.SaPow[allCardsId.ElementAt(randomIndex) - 1] += rateDrop;
 
                             allCardsId.RemoveAt(randomIndex);
                         }
                     }
+
+                    //if (randomSize * maxDropRate < Static.MaxRateDrop)
+                    //{
+                    //    maxDropRate = GetMaximum(randomSize);
+                    //}
+
+                    //randomNumbersArray = GenerateRandomNumbers(randomSize, minDropRate, maxDropRate, Static.MaxRateDrop);
+
+                    //foreach (var randomNumber in randomNumbersArray)
+                    //{
+                    //    if (allCardsId.Count > 0)
+                    //    {
+                    //        int randomIndex = GetRandomNumber(0, allCardsId.Count());
+
+                    //        t1.Drop.SaPow[allCardsId.ElementAt(randomIndex) - 1] += randomNumber;
+
+                    //        allCardsId.RemoveAt(randomIndex);
+                    //    }
+                    //    else
+                    //    {
+                    //        allCardsId = Static.Cards
+                    //            .Select(y => y.Id)
+                    //            .OrderBy(z => _random.Next())
+                    //            .ToList();
+
+                    //        int randomIndex = GetRandomNumber(0, allCardsId.Count());
+
+                    //        t1.Drop.SaPow[allCardsId.ElementAt(randomIndex) - 1] += randomNumber;
+
+                    //        allCardsId.RemoveAt(randomIndex);
+                    //    }
+                    //}
 
                     // SA - TEC
                     randomSize = GetRandomNumber(20, 160);
 
-                    if (randomSize * maxDropRate < Static.MaxRateDrop)
+                    for (int i = 0; i < randomSize; i++)
                     {
-                        maxDropRate = GetMaximum(randomSize);
-                    }
+                        var rateDrop = GetRandomNumber(minDropRate, maxDropRate);
 
-                    randomNumbersArray = GenerateRandomNumbers(randomSize, minDropRate, maxDropRate, Static.MaxRateDrop);
-
-                    foreach (var randomNumber in randomNumbersArray)
-                    {
                         if (allCardsId.Count > 0)
                         {
                             int randomIndex = GetRandomNumber(0, allCardsId.Count());
 
-                            t1.Drop.SaTec[allCardsId.ElementAt(randomIndex) - 1] += randomNumber;
+                            t1.Drop.SaTec[allCardsId.ElementAt(randomIndex) - 1] += rateDrop;
 
                             allCardsId.RemoveAt(randomIndex);
                         }
@@ -840,11 +908,43 @@ namespace FMLib.Randomizer
 
                             int randomIndex = GetRandomNumber(0, allCardsId.Count());
 
-                            t1.Drop.SaTec[allCardsId.ElementAt(randomIndex) - 1] += randomNumber;
+                            t1.Drop.SaTec[allCardsId.ElementAt(randomIndex) - 1] += rateDrop;
 
                             allCardsId.RemoveAt(randomIndex);
                         }
                     }
+
+                    //if (randomSize * maxDropRate < Static.MaxRateDrop)
+                    //{
+                    //    maxDropRate = GetMaximum(randomSize);
+                    //}
+
+                    //randomNumbersArray = GenerateRandomNumbers(randomSize, minDropRate, maxDropRate, Static.MaxRateDrop);
+
+                    //foreach (var randomNumber in randomNumbersArray)
+                    //{
+                    //    if (allCardsId.Count > 0)
+                    //    {
+                    //        int randomIndex = GetRandomNumber(0, allCardsId.Count());
+
+                    //        t1.Drop.SaTec[allCardsId.ElementAt(randomIndex) - 1] += randomNumber;
+
+                    //        allCardsId.RemoveAt(randomIndex);
+                    //    }
+                    //    else
+                    //    {
+                    //        allCardsId = Static.Cards
+                    //            .Select(y => y.Id)
+                    //            .OrderBy(z => _random.Next())
+                    //            .ToList();
+
+                    //        int randomIndex = GetRandomNumber(0, allCardsId.Count());
+
+                    //        t1.Drop.SaTec[allCardsId.ElementAt(randomIndex) - 1] += randomNumber;
+
+                    //        allCardsId.RemoveAt(randomIndex);
+                    //    }
+                    //}
                 }
             }
         }
@@ -861,7 +961,7 @@ namespace FMLib.Randomizer
                     var randomSize = GetRandomNumber(20, 200);
                     var minimumRandom = 1;
                     var maximumRandom = GetMaximum(randomSize);
-                    var randomNumbersArray = GenerateRandomNumbers(randomSize, minimumRandom, maximumRandom, Static.MaxRateDrop);
+                    //var randomNumbersArray = GenerateRandomNumbers(randomSize, minimumRandom, maximumRandom, Static.MaxRateDrop);
 
                     // Limpamos a lista antiga.
                     Array.Clear(t1.Deck, 0, Static.MaxCards);
@@ -889,14 +989,23 @@ namespace FMLib.Randomizer
                         .Where(x => allBannedCards.Contains(x) == false)
                         .ToList();
 
-                    foreach (var randomNumber in randomNumbersArray)
+                    for (int i = 0; i < randomSize; i++)
                     {
                         int randomIndex = GetRandomNumber(0, allCardsId.Count());
 
-                        t1.Deck[allCardsId.ElementAt(randomIndex) - 1] = randomNumber;
+                        t1.Deck[allCardsId.ElementAt(randomIndex) - 1] = GetRandomNumber(minimumRandom, maximumRandom);
 
                         allCardsId.RemoveAt(randomIndex);
                     }
+
+                    //foreach (var randomNumber in randomNumbersArray)
+                    //{
+                    //    int randomIndex = GetRandomNumber(0, allCardsId.Count());
+
+                    //    t1.Deck[allCardsId.ElementAt(randomIndex) - 1] = randomNumber;
+
+                    //    allCardsId.RemoveAt(randomIndex);
+                    //}
                 }
             }
         }
@@ -919,7 +1028,7 @@ namespace FMLib.Randomizer
                 var randomSize = GetRandomNumber(20, 34);
                 var minimumRandom = 1;
                 var maximumRandom = GetMaximum(randomSize);
-                var randomNumbersArray = GenerateRandomNumbers(randomSize, minimumRandom, maximumRandom, Static.MaxRateDrop);
+                //var randomNumbersArray = GenerateRandomNumbers(randomSize, minimumRandom, maximumRandom, Static.MaxRateDrop);
 
                 // Aumentamos o número de cartas equipamentos obtidas.
                 Static.StarterDeck[6].Dropped++;
@@ -938,20 +1047,29 @@ namespace FMLib.Randomizer
                     .Where(x => allBannedCards.Contains(x) == false)
                     .ToList();
 
-                foreach (var randomNumber in randomNumbersArray)
+                for (int i = 0; i < randomSize; i++)
                 {
                     int randomIndex = GetRandomNumber(0, allEquipsId.Count());
 
-                    Static.StarterDeck[6].Cards[allEquipsId.ElementAt(randomIndex) - 1] = randomNumber;
+                    Static.StarterDeck[6].Cards[allEquipsId.ElementAt(randomIndex) - 1] = GetRandomNumber(minimumRandom, maximumRandom);
 
                     allEquipsId.RemoveAt(randomIndex);
                 }
+
+                //foreach (var randomNumber in randomNumbersArray)
+                //{
+                //    int randomIndex = GetRandomNumber(0, allEquipsId.Count());
+
+                //    Static.StarterDeck[6].Cards[allEquipsId.ElementAt(randomIndex) - 1] = randomNumber;
+
+                //    allEquipsId.RemoveAt(randomIndex);
+                //}
 
                 // Randomize magics. (Existem no máximo 33 mágicas.)
                 randomSize = GetRandomNumber(20, 33);
                 minimumRandom = 1;
                 maximumRandom = GetMaximum(randomSize);
-                randomNumbersArray = GenerateRandomNumbers(randomSize, minimumRandom, maximumRandom, Static.MaxRateDrop);
+                //randomNumbersArray = GenerateRandomNumbers(randomSize, minimumRandom, maximumRandom, Static.MaxRateDrop);
 
                 // Aumentamos o número de cartas mágicas obtidas.
                 Static.StarterDeck[5].Dropped++;
@@ -970,20 +1088,29 @@ namespace FMLib.Randomizer
                     .Where(x => allBannedCards.Contains(x) == false)
                     .ToList();
 
-                foreach (var randomNumber in randomNumbersArray)
+                for (int i = 0; i < randomSize; i++)
                 {
                     int randomIndex = GetRandomNumber(0, allMagicsId.Count());
 
-                    Static.StarterDeck[5].Cards[allMagicsId.ElementAt(randomIndex) - 1] = randomNumber;
+                    Static.StarterDeck[5].Cards[allMagicsId.ElementAt(randomIndex) - 1] = GetRandomNumber(minimumRandom, maximumRandom);
 
                     allMagicsId.RemoveAt(randomIndex);
                 }
+
+                //foreach (var randomNumber in randomNumbersArray)
+                //{
+                //    int randomIndex = GetRandomNumber(0, allMagicsId.Count());
+
+                //    Static.StarterDeck[5].Cards[allMagicsId.ElementAt(randomIndex) - 1] = randomNumber;
+
+                //    allMagicsId.RemoveAt(randomIndex);
+                //}
 
                 // Randomize traps. (Existem no máximo 10 traps.)
                 randomSize = GetRandomNumber(1, 10);
                 minimumRandom = 1;
                 maximumRandom = GetMaximum(randomSize);
-                randomNumbersArray = GenerateRandomNumbers(randomSize, minimumRandom, maximumRandom, Static.MaxRateDrop);
+                //randomNumbersArray = GenerateRandomNumbers(randomSize, minimumRandom, maximumRandom, Static.MaxRateDrop);
 
                 // Limpamos a lista antiga.
                 Array.Clear(Static.StarterDeck[4].Cards, 0, Static.MaxCards);
@@ -999,14 +1126,23 @@ namespace FMLib.Randomizer
                     .Where(x => allBannedCards.Contains(x) == false)
                     .ToList();
 
-                foreach (var randomNumber in randomNumbersArray)
+                for (int i = 0; i < randomSize; i++)
                 {
                     int randomIndex = GetRandomNumber(0, allTrapsId.Count());
 
-                    Static.StarterDeck[4].Cards[allTrapsId.ElementAt(randomIndex) - 1] = randomNumber;
+                    Static.StarterDeck[4].Cards[allTrapsId.ElementAt(randomIndex) - 1] = GetRandomNumber(minimumRandom, maximumRandom);
 
                     allTrapsId.RemoveAt(randomIndex);
                 }
+
+                //foreach (var randomNumber in randomNumbersArray)
+                //{
+                //    int randomIndex = GetRandomNumber(0, allTrapsId.Count());
+
+                //    Static.StarterDeck[4].Cards[allTrapsId.ElementAt(randomIndex) - 1] = randomNumber;
+
+                //    allTrapsId.RemoveAt(randomIndex);
+                //}
 
                 // Randomize monsters.
                 // Iremos diminuir a quantidade de monstros do primeiro e segundo 'set' de cartas (16 -> 15)
@@ -1019,7 +1155,7 @@ namespace FMLib.Randomizer
                     randomSize = GetRandomNumber(60, 120);
                     minimumRandom = 1;
                     maximumRandom = GetMaximum(randomSize);
-                    randomNumbersArray = GenerateRandomNumbers(randomSize, minimumRandom, maximumRandom, Static.MaxRateDrop);
+                    //randomNumbersArray = GenerateRandomNumbers(randomSize, minimumRandom, maximumRandom, Static.MaxRateDrop);
 
                     // Limpamos a lista antiga.
                     Array.Clear(Static.StarterDeck[i].Cards, 0, Static.MaxCards);
@@ -1043,14 +1179,23 @@ namespace FMLib.Randomizer
                         .Where(x => allBannedCards.Contains(x) == false)
                         .ToList();
 
-                    foreach (var randomNumber in randomNumbersArray)
+                    for (int j = 0; j < randomSize; j++)
                     {
                         int randomIndex = GetRandomNumber(0, allMonstersId.Count());
 
-                        Static.StarterDeck[i].Cards[allMonstersId.ElementAt(randomIndex) - 1] = randomNumber;
+                        Static.StarterDeck[i].Cards[allMonstersId.ElementAt(randomIndex) - 1] = GetRandomNumber(minimumRandom, maximumRandom);
 
                         allMonstersId.RemoveAt(randomIndex);
                     }
+
+                    //foreach (var randomNumber in randomNumbersArray)
+                    //{
+                    //    int randomIndex = GetRandomNumber(0, allMonstersId.Count());
+
+                    //    Static.StarterDeck[i].Cards[allMonstersId.ElementAt(randomIndex) - 1] = randomNumber;
+
+                    //    allMonstersId.RemoveAt(randomIndex);
+                    //}
                 }
             }
         }
