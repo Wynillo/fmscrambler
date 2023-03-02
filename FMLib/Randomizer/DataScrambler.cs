@@ -849,7 +849,7 @@ namespace FMLib.Randomizer
 
                 // Randomize equips. (Existem no máximo 34 equipamentos.)
                 var randomSize = GetRandomNumber(20, 34);
-                var randomNumbersArray = GenerateRandomNumbers(randomSize, 1, 100, Static.MaxRateDrop);
+                var randomNumbersArray = GenerateRandomNumbers(randomSize, 1, 140, Static.MaxRateDrop);
 
                 // Aumentamos o número de cartas equipamentos obtidas.
                 Static.StarterDeck[6].Dropped++;
@@ -879,7 +879,7 @@ namespace FMLib.Randomizer
 
                 // Randomize magics. (Existem no máximo 33 mágicas.)
                 randomSize = GetRandomNumber(20, 33);
-                randomNumbersArray = GenerateRandomNumbers(randomSize, 1, 100, Static.MaxRateDrop);
+                randomNumbersArray = GenerateRandomNumbers(randomSize, 1, 140, Static.MaxRateDrop);
 
                 // Aumentamos o número de cartas mágicas obtidas.
                 Static.StarterDeck[5].Dropped++;
@@ -909,7 +909,7 @@ namespace FMLib.Randomizer
 
                 // Randomize traps. (Existem no máximo 10 traps.)
                 randomSize = GetRandomNumber(1, 10);
-                randomNumbersArray = GenerateRandomNumbers(randomSize, 1, 100, Static.MaxRateDrop);
+                randomNumbersArray = GenerateRandomNumbers(randomSize, 1, 310, Static.MaxRateDrop);
 
                 // Limpamos a lista antiga.
                 Array.Clear(Static.StarterDeck[4].Cards, 0, Static.MaxCards);
