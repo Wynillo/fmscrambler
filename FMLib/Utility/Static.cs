@@ -16,10 +16,6 @@ namespace FMLib.Utility
         /// <summary>
         /// 
         /// </summary>
-        public static bool GlitchFusions = false;
-        /// <summary>
-        /// 
-        /// </summary>
         public static bool RandomAttributes = false;
         /// <summary>
         /// 

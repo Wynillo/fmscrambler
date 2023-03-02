@@ -38,24 +38,37 @@ namespace FMScrambler
         // Randomizing via Game Image
         private async void btn_loadiso_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog dlg = new OpenFileDialog { Title = "Location of Yu-Gi-Oh! Forbidden Memories NTSC CUE File", Filter = "*.cue | *.cue" };
+            var dlg = new OpenFileDialog
+            {
+                Title = "Location of Yu-Gi-Oh! Forbidden Memories NTSC CUE File",
+                Filter = "*.cue | *.cue"
+            };
 
             if (dlg.ShowDialog() == true)
             {
                 lbl_path.Content = Path.GetDirectoryName(dlg.FileName);
 
-                MessageBox.Show("Extracting game data can take a minute... please wait.", "Extracting data",
-                    MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(
+                    "Extracting game data can take a minute... please wait.",
+                    "Extracting data",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+
                 pgr_back.Visibility = Visibility.Visible;
 
-                BinChunk chunker = new BinChunk();
+                var chunker = new BinChunk();
+
                 await Task.Run(() => chunker.ExtractBin(dlg.FileName));
 
                 pgr_back.Visibility = Visibility.Hidden;
-                MessageBox.Show("Extracting game data complete.", "Extracting data",
-                    MessageBoxButton.OK, MessageBoxImage.Information);
-                Static.UsedIso = true;
 
+                MessageBox.Show(
+                    "Extracting game data complete.",
+                    "Extracting data",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+
+                Static.UsedIso = true;
                 btn_patchiso.IsEnabled = false;
                 btn_perform.IsEnabled = true;
 
@@ -131,25 +144,29 @@ namespace FMScrambler
 
         private void SyncScramble()
         {
-            int cardCount = Static.GlitchFusions ? 1400 : Static.MaxCards;
+            int cardCount = Static.MaxCards;
+
             Static.SetCardCount(cardCount);
 
-            DataScrambler fileHandler = new DataScrambler(int.Parse(txt_seed.Text));
+            var fileHandler = new DataScrambler(int.Parse(txt_seed.Text));
 
             Dispatcher.CurrentDispatcher.Invoke(() =>
                 {
                     fileHandler.PerformScrambling((int)txt_minAtk.Value, (int)txt_maxAtk.Value,
                         (int)txt_minDef.Value, (int)txt_maxDef.Value, (int)txt_minCost.Value,
-                        (int)txt_maxCost.Value, (int)txt_minDropRate.Value, (int)txt_maxDropRate.Value,
-                        (int)txt_dropCount.Value, (ushort)txt_starChipsDuel.Value,
+                        (int)txt_maxCost.Value, (int)txt_dropCount.Value, (ushort)txt_starChipsDuel.Value,
                         (int)txt_minAtkStarterDeck.Value, (int)txt_maxAtkStarterDeck.Value,
                         (int)txt_minDefStarterDeck.Value, (int)txt_maxDefStarterDeck.Value,
                         (int)txt_minAtkDuelistDeck.Value, (int)txt_maxAtkDuelistDeck.Value,
                         (int)txt_minDefDuelistDeck.Value, (int)txt_maxDefDuelistDeck.Value);
                 });
 
-            MessageBox.Show("Done scrambling, you may proceed with patching your game ISO now." + (Static.Spoiler ? " Spoiler files were generated as well" : ""),
-                "Done scrambling.", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(
+                "Done scrambling, you may proceed with patching your game ISO now."
+                + (Static.Spoiler ? " Spoiler files were generated as well" : ""),
+                "Done scrambling.",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
 
             btn_patchiso.IsEnabled = true;
             btn_perform.IsEnabled = false;
@@ -157,7 +174,8 @@ namespace FMScrambler
 
         private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
         {
-            Regex regex = new Regex("[^0-9]+");
+            var regex = new Regex("[^0-9]+");
+
             e.Handled = regex.IsMatch(e.Text);
         }
 
@@ -176,10 +194,16 @@ namespace FMScrambler
 
             if (!Static.UsedIso)
             {
-                MessageBox.Show("Did you make a backup copy of your Image file before patching? If not, do so before pressing OK.", "Backup Info",
-                    MessageBoxButton.OK, MessageBoxImage.Question);
+                MessageBox.Show(
+                    "Did you make a backup copy of your Image file before patching? If not, do so before pressing OK.",
+                    "Backup Info",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Question);
 
-                OpenFileDialog dlg = new OpenFileDialog { Title = "Forbidden Memories Image" };
+                var dlg = new OpenFileDialog
+                {
+                    Title = "Forbidden Memories Image"
+                };
 
                 if (dlg.ShowDialog() == true)
                 {
@@ -207,8 +231,13 @@ namespace FMScrambler
 
             if (patchResult == 1)
             {
-                MessageBox.Show("Image successfully patched! Have fun playing! Location of Randomized Image: " + Static.IsoPath, "Done patching.",
-                    MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(
+                    "Image successfully patched! Have fun playing! Location of Randomized Image: "
+                    + Static.IsoPath,
+                    "Done patching.",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+
                 Process.Start(Directory.GetParent(Static.IsoPath).FullName);
 
                 // Allow scrambling again
@@ -217,8 +246,11 @@ namespace FMScrambler
             }
             else
             {
-                MessageBox.Show("Error patching Image. Not Forbidden Memories or wrong version.", "Error patching.",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(
+                    "Error patching Image. Not Forbidden Memories or wrong version.",
+                    "Error patching.",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
         }
 
@@ -343,8 +375,17 @@ namespace FMScrambler
 
             if (!File.Exists(table_path))
             {
-                MessageBox.Show("CharacterTable.txt not found! Provide a path for it!", "Unable to find CharacterTable.txt", MessageBoxButton.OK, MessageBoxImage.Error);
-                OpenFileDialog ofd = new OpenFileDialog { Title = "CharacterTable file", Filter = "CharacterTable.txt|CharacterTable.txt" };
+                MessageBox.Show(
+                    "CharacterTable.txt not found! Provide a path for it!",
+                    "Unable to find CharacterTable.txt",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+
+                var ofd = new OpenFileDialog
+                {
+                    Title = "CharacterTable file",
+                    Filter = "CharacterTable.txt|CharacterTable.txt"
+                };
 
                 if (ofd.ShowDialog() == true)
                 {
@@ -353,25 +394,25 @@ namespace FMScrambler
                 else
                 {
                     Close();
+
                     return;
                 }
             }
 
-            StringReader strReader = new StringReader(File.ReadAllText(table_path));
-
+            var strReader = new StringReader(File.ReadAllText(table_path));
             string input;
 
             while ((input = strReader.ReadLine()) != null)
             {
-                Match match = Regex.Match(input, "^([A-Fa-f0-9]{2})\\=(.*)$");
+                var match = Regex.Match(input, "^([A-Fa-f0-9]{2})\\=(.*)$");
 
                 if (!match.Success)
                 {
                     continue;
                 }
 
-                char k1 = Convert.ToChar(match.Groups[2].ToString());
-                byte k2 = (byte)int.Parse(match.Groups[1].ToString(), NumberStyles.HexNumber);
+                var k1 = Convert.ToChar(match.Groups[2].ToString());
+                var k2 = (byte)int.Parse(match.Groups[1].ToString(), NumberStyles.HexNumber);
 
                 Static.Dict.Add(k2, k1);
 
@@ -384,14 +425,24 @@ namespace FMScrambler
             // There should be 85 entries otherwise file got corrupted, misread or user manually provided a bad file
             if (Static.Dict.Values.Count != 85)
             {
-                MessageBox.Show("Provided CharacterTable.txt is incorrect or incomplete!", "Error reading CharacterTable.txt", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(
+                    "Provided CharacterTable.txt is incorrect or incomplete!",
+                    "Error reading CharacterTable.txt",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+
                 Close();
             }
         }
 
         private void btn_loadiso1_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog dlg = new OpenFileDialog { Title = "Location of SLUS_014.11", Filter = "SLUS_014.11|SLUS_014.11" };
+            var dlg = new OpenFileDialog
+            {
+                Title = "Location of SLUS_014.11",
+                Filter = "SLUS_014.11|SLUS_014.11"
+            };
+
             var findSlus = false;
             var findWa = false;
 

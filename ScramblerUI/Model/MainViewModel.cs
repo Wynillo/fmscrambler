@@ -16,7 +16,6 @@ namespace FMScrambler.Model
         private bool _checkboxRandomCardDrops;
         private bool _checkboxRandomDecks;
         private bool _checkboxAttackDefenseRandomizing;
-        private bool _checkboxGlitchCards;
         private bool _checkboxRandomEquips;
         private bool _checkboxRandomFusions;
         private bool _checkboxRandomStarchips;
@@ -30,8 +29,6 @@ namespace FMScrambler.Model
         private int _textboxMaxDefense = 3000;
         private int _textboxMinCost = 0;
         private int _textboxMaxCost = 999999;
-        private int _textboxMinDropRate = 1;
-        private int _textboxMaxDropRate = 1;
         private int _textboxDropCount = 1;
         private ushort _textboxStarChipsDuel = 5;
         private bool _checkboxIsoSeed = true;
@@ -130,18 +127,6 @@ namespace FMScrambler.Model
                 _checkboxAttackDefenseRandomizing = value;
                 Static.RandomAtkdef = value;
                 PropertyChanged(this, new PropertyChangedEventArgs("CheckboxAttackDefenseRandomizing"));
-                onIsoCheckbox();
-            }
-        }
-
-        public bool CheckboxGlitchCards
-        {
-            get => _checkboxGlitchCards;
-            set
-            {
-                _checkboxGlitchCards = value;
-                Static.GlitchFusions = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("CheckboxGlitchCards"));
                 onIsoCheckbox();
             }
         }
@@ -312,16 +297,6 @@ namespace FMScrambler.Model
             }
         }
 
-        public int TextboxMinDropRate
-        {
-            get => _textboxMinDropRate;
-            set
-            {
-                _textboxMinDropRate = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("TextboxMinDropRate"));
-            }
-        }
-
         public int TextboxDropCount
         {
             get => _textboxDropCount;
@@ -341,16 +316,6 @@ namespace FMScrambler.Model
                 _textboxStarChipsDuel = value;
                 PropertyChanged(this, new PropertyChangedEventArgs("TextboxStarChipsDuel"));
                 onIsoCheckbox();
-            }
-        }
-
-        public int TextboxMaxDropRate
-        {
-            get => _textboxMaxDropRate;
-            set
-            {
-                _textboxMaxDropRate = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("TextboxMaxDropRate"));
             }
         }
 
