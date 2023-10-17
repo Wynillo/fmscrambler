@@ -1,32 +1,31 @@
 ﻿using FMLib.Utility;
 
-namespace FMLib.Models
+namespace FMLib.Models;
+
+/// <summary>
+/// 
+/// </summary>
+public class Duelist
 {
     /// <summary>
     /// 
     /// </summary>
-    public class Duelist
+    /// <param name="name"></param>
+    public Duelist(string name)
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="name"></param>
-        public Duelist(string name)
-        {
-            Name = name;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Name { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        public int[] Deck { get; set; } = new int[Static.MaxCards];
-        /// <summary>
-        /// 
-        /// </summary>
-        public Rank Drop { get; set; } = new Rank();
+        Name = name;
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public string Name { get; }
+    /// <summary>
+    /// 
+    /// </summary>
+    public int[] Deck { get; } = new int[Static.MaxCards];
+    /// <summary>
+    /// 
+    /// </summary>
+    public Rank Drop { get; } = new Rank();
 }

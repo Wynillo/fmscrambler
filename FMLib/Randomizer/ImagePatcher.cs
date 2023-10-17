@@ -4,154 +4,149 @@ using System.IO;
 using FMLib.Models;
 using FMLib.Utility;
 
-namespace FMLib.Randomizer
+namespace FMLib.Randomizer;
+
+/// <summary>
+/// Patching of the Game Image File (BIN/ISO)
+/// </summary>
+public class ImagePatcher
 {
     /// <summary>
-    /// Patching of the Game Image File (BIN/ISO)
+    /// List of Files in the Game Image
     /// </summary>
-    public class ImagePatcher
+    public List<GameFile> GameFile = new List<GameFile>();
+
+    /// <summary>
+    /// Filestream to handle the data
+    /// </summary>
+    private FileStream _fs;
+
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="file">Filename</param>        
+    public ImagePatcher(string file)
     {
-        /// <summary>
-        /// List of Files in the Game Image
-        /// </summary>
-        public List<GameFile> GameFile = new List<GameFile>();
+        _fs = new FileStream(file, FileMode.Open);
+    }
 
-        /// <summary>
-        /// Filestream to handle the data
-        /// </summary>
-        private FileStream _fs;
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="file">Filename</param>        
-        public ImagePatcher(string file)
+    /// <summary>
+    /// Method to patch the Game Image File
+    /// </summary>
+    /// <returns>1 for success, -1 for failure</returns>
+    public int PatchImage()
+    {
+        ListDirectories(ref _fs, new[]
         {
-            _fs = new FileStream(file, FileMode.Open);
-        }
+            new GameFile
+            {
+                Offset = 0xCA20,
+                Name = "",
+                Size = 2048
+            }
+        });
 
-        /// <summary>
-        /// Method to patch the Game Image File
-        /// </summary>
-        /// <returns>1 for success, -1 for failure</returns>
-        public int PatchImage()
+        foreach (var k in GameFile)
         {
-            ListDirectories(ref _fs, new[]
+            // Choose which File to use based on the name of the Item in the loop
+            var p = k.Name == "SLUS_014.11" ? Static.SlusPath : Static.WaPath;
+
+            using var fs2 = new FileStream(p, FileMode.Open);
+            // Filesize is different, abort with error
+            if (k.Size != fs2.Length)
             {
-                new GameFile
-                {
-                    Offset = 0xCA20,
-                    Name = "",
-                    Size = 2048
-                }
-            });
-
-            foreach (GameFile k in GameFile)
-            {
-                // Choose which File to use based on the name of the Item in the loop
-                string p = k.Name == "SLUS_014.11" ? Static.SlusPath : Static.WaPath;
-
-                using (FileStream fs2 = new FileStream(p, FileMode.Open))
-                {
-                    // Filesize is different, abort with error
-                    if (k.Size != fs2.Length)
-                    {
-                        return -1;
-                    }
-
-                    _fs.Position = k.Offset + 24;
-
-                    for (int n = 0; n < fs2.Length / 2048L; n++)
-                    {
-                        _fs.Write(fs2.ExtractPiece(0, 2048), 0, 2048);
-                        _fs.Position += 0x130L;
-                    }
-                }
+                return -1;
             }
 
-            _fs.Dispose();
-            _fs.Close();
+            _fs.Position = k.Offset + 24;
 
-            var output_dir = Static.IsoPath.Substring(0, Static.IsoPath.LastIndexOf('\\'));
-
-            if (Static.UsedIso)
+            for (var n = 0; n < fs2.Length / 2048L; n++)
             {
-                File.Copy(Static.IsoPath, $"{output_dir}\\{Static.RandomizerFileName}.bin");
-
-            }
-            else
-            {
-                File.Move(Static.IsoPath, $"{output_dir}\\{Static.RandomizerFileName}.bin");
-            }
-
-            Static.IsoPath = $"{output_dir}\\{Static.RandomizerFileName}.bin";
-            string[] cueTemplate = { $"FILE \"{Static.RandomizerFileName}.bin\" BINARY", "  TRACK 01 MODE2/2352", "    INDEX 01 00:00:00" };
-            File.WriteAllLines($"{output_dir}\\{Static.RandomizerFileName}.cue", cueTemplate);
-
-            return 1;
-        }
-
-        private void ListDirectories(ref FileStream fs, IEnumerable<GameFile> iso)
-        {
-            var fileList = new List<GameFile>();
-
-            foreach (GameFile file in iso)
-            {
-                using (var ms = new MemoryStream(fs.ExtractPiece(0, 2048, file.Offset)))
-                {
-                    ms.Position = 120L;
-
-                    for (int j = ms.ReadByte(); j > 0; j = ms.ReadByte())
-                    {
-                        var tmpFile = new GameFile();
-                        byte[] arr = ms.ExtractPiece(0, j - 1);
-
-                        tmpFile.Offset = arr.ExtractInt32(1) * 2352;
-                        tmpFile.Size = arr.ExtractInt32(9);
-                        tmpFile.IsDirectory = arr[24] == 2;
-                        tmpFile.NameSize = arr[31];
-                        tmpFile.Name = GetName(ref arr, tmpFile.NameSize);
-
-                        if (tmpFile.IsDirectory)
-                        {
-                            fileList.Add(tmpFile);
-                        }
-
-                        if (tmpFile.NameSize == 13 && tmpFile.Name == "SLUS_014.11")
-                        {
-                            GameFile.Add(tmpFile);
-                        }
-
-                        if (tmpFile.NameSize == 12 && tmpFile.Name == "WA_MRG.MRG")
-                        {
-                            GameFile.Add(tmpFile);
-                        }
-                    }
-                }
-            }
-            if (fileList.Count > 0)
-            {
-                ListDirectories(ref fs, fileList.ToArray());
+                _fs.Write(fs2.ExtractPiece(0, 2048), 0, 2048);
+                _fs.Position += 0x130L;
             }
         }
 
-        private static string GetName(ref byte[] data, int size)
+        _fs.Dispose();
+        _fs.Close();
+
+        var outputDir = Static.IsoPath.Substring(0, Static.IsoPath.LastIndexOf('\\'));
+
+        if (Static.UsedIso)
         {
-            string text = string.Empty;
+            File.Copy(Static.IsoPath, $"{outputDir}\\{Static.RandomizerFileName}.bin");
 
-            for (int i = 0; i < size; i++)
+        }
+        else
+        {
+            File.Move(Static.IsoPath, $"{outputDir}\\{Static.RandomizerFileName}.bin");
+        }
+
+        Static.IsoPath = $"{outputDir}\\{Static.RandomizerFileName}.bin";
+        string[] cueTemplate = { $"FILE \"{Static.RandomizerFileName}.bin\" BINARY", "  TRACK 01 MODE2/2352", "    INDEX 01 00:00:00" };
+        File.WriteAllLines($"{outputDir}\\{Static.RandomizerFileName}.cue", cueTemplate);
+
+        return 1;
+    }
+
+    private void ListDirectories(ref FileStream fs, IEnumerable<GameFile> iso)
+    {
+        var fileList = new List<GameFile>();
+
+        foreach (var file in iso)
+        {
+            using var ms = new MemoryStream(fs.ExtractPiece(0, 2048, file.Offset));
+            ms.Position = 120L;
+
+            for (var j = ms.ReadByte(); j > 0; j = ms.ReadByte())
             {
-                char c = Convert.ToChar(data[32 + i]);
+                var tmpFile = new GameFile();
+                var arr = ms.ExtractPiece(0, j - 1);
 
-                if (c == ';')
+                tmpFile.Offset = arr.ExtractInt32(1) * 2352;
+                tmpFile.Size = arr.ExtractInt32(9);
+                tmpFile.IsDirectory = arr[24] == 2;
+                tmpFile.NameSize = arr[31];
+                tmpFile.Name = GetName(ref arr, tmpFile.NameSize);
+
+                if (tmpFile.IsDirectory)
                 {
-                    break;
+                    fileList.Add(tmpFile);
                 }
 
-                text += c.ToString();
+                switch (tmpFile.NameSize)
+                {
+                    case 13 when tmpFile.Name == "SLUS_014.11":
+                    case 12 when tmpFile.Name == "WA_MRG.MRG":
+                        GameFile.Add(tmpFile);
+                        break;
+                }
+            }
+        }
+        
+        if (fileList.Count > 0)
+        {
+            // ReSharper disable once TailRecursiveCall
+            ListDirectories(ref fs, fileList.ToArray());
+        }
+    }
+
+    private static string GetName(ref byte[] data, int size)
+    {
+        var text = string.Empty;
+
+        for (var i = 0; i < size; i++)
+        {
+            var c = Convert.ToChar(data[32 + i]);
+
+            if (c == ';')
+            {
+                break;
             }
 
-            return text;
+            text += c.ToString();
         }
+
+        return text;
     }
 }
